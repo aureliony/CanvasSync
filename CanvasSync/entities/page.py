@@ -17,8 +17,6 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 
 """
 
-# Inbuilt modules
-import io
 import os
 import re
 
@@ -116,11 +114,23 @@ class Page(CanvasEntity):
 
         self.download_linked_files(body)
 
-        with open(output_path, "w", encoding="utf-8") as out_file:
-            out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
-            out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
-            out_file.write(u"<hr>")
-            out_file.write(body or u"")
+        new_content = (
+            u"<h1><strong>%s</strong></h1>" % self.name
+            + u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url
+            + u"<hr>"
+            + (body or u"")
+        )
+
+        if os.path.exists(output_path):
+            with open(output_path, "r", encoding="utf-8") as existing_file:
+                old_content = existing_file.read()
+        else:
+            old_content = None
+
+        if old_content != new_content:
+            self.print_status(u"DOWNLOADING", color=u"blue")
+            with open(output_path, "w", encoding="utf-8") as out_file:
+                out_file.write(new_content)
 
         return True
 
