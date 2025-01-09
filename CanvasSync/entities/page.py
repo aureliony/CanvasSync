@@ -103,21 +103,9 @@ class Page(CanvasEntity):
 
         return sub_files
 
-    def push_down(self):
-        """
-        Lower the level of this page once into a sub-folder of similar name
-        """
-        self._make_folder()
-        base, tail = os.path.split(self.sync_path)
-        self.sync_path = self.sync_path + u"/" + tail
-
     def download(self):
-        """ Download the page """
-        if os.path.exists(self.sync_path + u".html"):
-            return False
-
-        # Print download status
-        self.print_status(u"DOWNLOADING", color=u"blue")
+        """Download the page"""
+        output_path = self.sync_path + ".html"
 
         # Download additional info and HTML body of the Page object if not already supplied
         self.page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
@@ -126,15 +114,13 @@ class Page(CanvasEntity):
         body = self.page_info.get(u"body", "")
         html_url = self.page_info.get(u"html_url", "")
 
-        if self.download_linked_files(body):
-            self.push_down()
+        self.download_linked_files(body)
 
-        if not os.path.exists(self.sync_path):
-            with io.open(self.sync_path + u".html", u"w", encoding=u"utf-8") as out_file:
-                out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
-                out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
-                out_file.write(u"<hr>")
-                out_file.write(body or u"")
+        with open(output_path, "w", encoding="utf-8") as out_file:
+            out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
+            out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
+            out_file.write(u"<hr>")
+            out_file.write(body or u"")
 
         return True
 
@@ -144,9 +130,10 @@ class Page(CanvasEntity):
         If the page has already been downloaded, skip downloading.
         Page objects have no children objects and represents an end point of a folder traverse.
         """
-        self.print_status(u"SYNCED", color=u"green")
-
         for file in self:
             file.update_path()
+
+        if self.download():
+            self.print_status(u"SYNCED", color=u"green")
 
         super().sync()
