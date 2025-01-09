@@ -49,7 +49,11 @@ class LinkedFile(CanvasEntity):
 
         # No file extension or weirdly long filename will not be allowed
         # (this is not strictly necessary as the regex should only match OK URLs)
-        if not os.path.splitext(file_name)[-1] or len(file_name) > 60:
+        if (
+            not os.path.splitext(file_name)[-1]
+            or len(file_name) > 60
+            or download_url.startswith("mailto:")
+        ):
             self.valid_url = False
 
         # Initialize base class
