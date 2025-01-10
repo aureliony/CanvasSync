@@ -45,7 +45,7 @@ class LinkedFile(CanvasEntity):
         file_name = os.path.split(download_url)[-1]
 
         # File path
-        file_path = parent.get_path() + file_name
+        file_path = os.path.join(parent.get_path(), file_name)
 
         # No file extension or weirdly long filename will not be allowed
         # (this is not strictly necessary as the regex should only match OK URLs)

@@ -17,6 +17,8 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 """
 
 # CanvasSync modules
+import os
+
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.external_url import ExternalUrl
 from CanvasSync.entities.file import File
@@ -40,7 +42,7 @@ class Module(CanvasEntity):
 
         module_id = self.module_info[u"id"]
         module_name = helpers.get_corrected_name(self.module_info[u"name"])
-        module_path = parent.get_path() + u"%s - %s" % (module_position, module_name)
+        module_path = os.path.join(parent.get_path(), u"%s - %s" % (module_position, module_name))
 
         # Initialize base class
         CanvasEntity.__init__(self,

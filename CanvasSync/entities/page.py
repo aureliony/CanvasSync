@@ -45,7 +45,7 @@ class Page(CanvasEntity):
 
         page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
         page_name = helpers.get_corrected_name(self.page_item_info[u"title"])
-        page_path = parent.get_path() + page_name
+        page_path = parent.get_path()
 
         # Initialize base class
         CanvasEntity.__init__(self,
@@ -102,9 +102,7 @@ class Page(CanvasEntity):
         return sub_files
 
     def download(self):
-        """Download the page"""
-        output_path = self.sync_path + ".html"
-
+        """ Download the page """
         # Download additional info and HTML body of the Page object if not already supplied
         self.page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
 
@@ -112,7 +110,12 @@ class Page(CanvasEntity):
         body = self.page_info.get(u"body", "")
         html_url = self.page_info.get(u"html_url", "")
 
-        self.download_linked_files(body)
+        if self.download_linked_files(body):
+            # There are linked files, make the html in a new folder
+            self.sync_path = os.path.join(self.sync_path, self.name)
+            self._make_folder()
+
+        output_path = os.path.join(self.sync_path, self.name + ".html")
 
         new_content = (
             u"<h1><strong>%s</strong></h1>" % self.name
@@ -140,10 +143,10 @@ class Page(CanvasEntity):
         If the page has already been downloaded, skip downloading.
         Page objects have no children objects and represents an end point of a folder traverse.
         """
-        for file in self:
-            file.update_path()
-
         if self.download():
             self.print_status(u"SYNCED", color=u"green")
+        
+        for file in self:
+            file.update_path()
 
         super().sync()

@@ -40,8 +40,7 @@ class Synchronizer(CanvasEntity):
         helpers.clear_console()
 
         # Get the corrected top-level sync path
-        sync_path = helpers.get_corrected_path(settings.sync_path,
-                                               parent_path=False, folder=True)
+        sync_path = settings.sync_path
 
         # A dictionary to store lists of CanvasEntity objects
         # added to the hierarchy under a course ID number

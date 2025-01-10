@@ -16,6 +16,8 @@ See developer_info.txt file for more information on the class hierarchy of entit
 """
 
 # CanvasSync module imports
+import os
+
 from CanvasSync.entities.assignment import Assignment
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.utilities.ANSI import ANSI
@@ -35,7 +37,7 @@ class AssignmentsFolder(CanvasEntity):
         # Initialize entity with hardcoded ID and name, we always want the folder to be named "Assignments"
         assignments_folder_id = -1
         assignments_folder_name = u"Assignments"
-        assignments_folder_path = parent.get_path() + assignments_folder_name
+        assignments_folder_path = os.path.join(parent.get_path(), assignments_folder_name)
 
         # Initialize base class
         CanvasEntity.__init__(self,

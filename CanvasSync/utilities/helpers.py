@@ -77,25 +77,6 @@ def clear_console():
     os.system(u'cls' if os.name == u'nt' else u'clear')
 
 
-def get_corrected_path(path, parent_path, folder):
-    """
-    Returns a corrected path string containing no forward slashed in the file name (will be misinterpreted as a
-    folder). Also adds a trailing forward slash if not present.
-
-    path        : string  | A string representing a path
-    parent_path : string  | A string representing the path of the parent of the object calling this method
-                             It is used to determine what part of the 'path' variable is the actual path and what is
-                             the name of the sub-folder/file that could potentially contain forward slahsed that must
-                             be replaced by dots.
-    folder      : boolean | Does the input path point to a folder? (False = file)
-                             If the path points to a folder, a trailing forward slash is appended to the path string.
-    """
-    path = os.path.abspath(path)
-    path += u"/" if folder else u""
-
-    return path
-
-
 def get_corrected_name(name):
     """
     Validates the name of an Entry

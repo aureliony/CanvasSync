@@ -16,6 +16,8 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 """
 
 # CanvasSync modules
+import os
+
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.file import File
 from CanvasSync.utilities import helpers
@@ -36,7 +38,7 @@ class Folder(CanvasEntity):
 
         folder_id = self.folder_info[u"id"]
         folder_name = helpers.get_corrected_name(self.folder_info[u"name"])
-        folder_path = parent.get_path() + folder_name
+        folder_path = os.path.join(parent.get_path(), folder_name)
 
         # Initialize base Module class
         CanvasEntity.__init__(self,

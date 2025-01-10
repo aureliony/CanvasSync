@@ -26,7 +26,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 # CanvasSync module imports
-from CanvasSync.utilities import helpers
 from CanvasSync.utilities.ANSI import ANSI
 
 
@@ -85,14 +84,8 @@ class CanvasEntity(object):
         else:
             self.settings = self.get_parent().get_settings()
 
-        # Sync path
-        if self.parent:
-            parent_path = parent.get_path()
-        else:
-            parent_path = False
-
         # Get the path of the CanvasEntity in the local folder
-        self.sync_path = helpers.get_corrected_path(sync_path, parent_path, folder=folder)
+        self.sync_path = sync_path
 
         # Child objects, that is Entities that are located below this current level in the folder hierarchy
         # E.g. this list could contain Item objects located under a Module object.
@@ -233,7 +226,7 @@ class CanvasEntity(object):
 
     def update_path(self):
         """ Update the path to the current parents sync path plus the current file name """
-        self.sync_path = self.get_parent().get_path() + self.get_name()
+        self.sync_path = os.path.join(self.get_parent().get_path(), self.get_name())
 
     def _make_folder(self):
         """ Create a folder on the sync path if not already present """

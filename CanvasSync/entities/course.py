@@ -20,6 +20,8 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 """
 
 # CanvasSync modules
+import os
+
 from CanvasSync.entities.assignments_folder import AssignmentsFolder
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.folder import Folder
@@ -46,7 +48,7 @@ class Course(CanvasEntity):
         if settings.use_nicknames:
             course_name = self.course_info[u"name"]
 
-        course_path = parent.get_path() + course_name
+        course_path = os.path.join(parent.get_path(), course_name)
 
         self.to_be_synced = True if course_name in parent.settings.courses_to_sync else False
 

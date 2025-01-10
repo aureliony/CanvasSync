@@ -40,7 +40,7 @@ class File(CanvasEntity):
 
         file_id = self.file_info[u"id"]
         file_name = helpers.get_corrected_name(self.file_info[u"display_name"])
-        file_path = parent.get_path() + file_name
+        file_path = os.path.join(parent.get_path(), file_name)
 
         # Initialize base class
         CanvasEntity.__init__(self,
