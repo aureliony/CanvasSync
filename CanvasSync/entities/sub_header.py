@@ -55,3 +55,14 @@ class SubHeader(Module):
         return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
                                                                    % (ANSI.format(u"Sub header", formatting=u"subheader"),
                                                                       self.name)
+
+    def sync(self):
+        """
+        1) Adding all File, Page, ExternalLink and SubFolder objects to the list of children
+        2) Synchronize all children objects
+        SubFolder is instantiated with a list of dictionaries of item information and will supply this to the add_items
+        method. add_items will then not download the items from the server.
+        """
+        self.add_items(items=self.items)
+
+        super().sync()

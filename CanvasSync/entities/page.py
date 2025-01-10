@@ -20,6 +20,8 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 import os
 import re
 
+from json2html import json2html
+
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.file import File
 from CanvasSync.entities.linked_file import LinkedFile
@@ -104,10 +106,12 @@ class Page(CanvasEntity):
     def download(self):
         """ Download the page """
         # Download additional info and HTML body of the Page object if not already supplied
-        self.page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
+        page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
+        # Cache the downloaded data
+        self.page_info = page_info.copy()
 
         # Create a HTML page locally and add a link leading to the live version
-        body = self.page_info.get(u"body", "")
+        body = page_info.pop(u"body", "")
         html_url = self.page_info.get(u"html_url", "")
 
         if self.download_linked_files(body):
@@ -122,6 +126,8 @@ class Page(CanvasEntity):
             + u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url
             + u"<hr>"
             + (body or u"")
+            + (u"<hr>" if body else "")
+            + json2html.convert(json=page_info) # Add the page metadata as a table
         )
 
         if os.path.exists(output_path):

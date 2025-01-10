@@ -130,7 +130,7 @@ class Module(CanvasEntity):
         for item in items_in_this_scope:
             if item[u"type"] == u"File" and self.settings.modules_settings[u"Files"]:
                 self.add_file(item)
-            elif item[u"type"] == u"Page" and self.settings.modules_settings[u"HTML pages"]:
+            elif item[u"type"] in [u"Page", u"Quiz"] and self.settings.modules_settings[u"HTML pages"]:
                 self.add_page(item)
             elif item[u"type"] == u"ExternalUrl" and self.settings.modules_settings[u"External URLs"]:
                 self.add_url(item)
