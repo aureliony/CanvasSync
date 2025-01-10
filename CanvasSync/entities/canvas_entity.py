@@ -202,9 +202,8 @@ class CanvasEntity(object):
         self.print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
 
     def sync(self):
-        with ThreadPoolExecutor() as executor:
-            for child in self:
-                executor.submit(child.sync)
+        with ThreadPoolExecutor(max_workers=8) as executor:
+            futures =  [executor.submit(child.sync) for child in self]
 
             # Wait for our turn to print
             if self.parent is not None:
