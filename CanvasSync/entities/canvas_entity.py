@@ -27,12 +27,23 @@ from concurrent.futures import ThreadPoolExecutor
 
 # CanvasSync module imports
 from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities.instructure_api import InstructureApi
 
 
 class CanvasEntity(object):
-    def __init__(self, id_number, name, sync_path, parent=None,
-                 folder=True, api=None, settings=None, identifier="",
-                 synchronizer=None, add_to_list_of_entities=True):
+    def __init__(
+        self,
+        id_number: str,
+        name: str,
+        sync_path: str,
+        parent: 'CanvasEntity' = None,
+        folder: bool = True,
+        api: InstructureApi = None,
+        settings: 'CanvasEntity' = None,
+        identifier: str = "",
+        synchronizer: 'CanvasEntity' = None,
+        add_to_list_of_entities: bool = True
+    ):
         """
         Constructor method
 
@@ -201,24 +212,35 @@ class CanvasEntity(object):
         """ Print status to console """
         self.print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
 
-    def sync(self):
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            futures =  [executor.submit(child.sync) for child in self]
+    def sync(self, threaded=True):
+        if not threaded:
+            for child in self:
+                child.sync()
 
-            # Wait for our turn to print
-            if self.parent is not None:
-                while not self.parent.has_printed or \
-                    self != self.parent.children[self.parent.child_to_print]:
-                    time.sleep(0.01)
-
-            # Flush print buffer
             for args, kwargs in self.print_queue:
                 print(*args, flush=True, **kwargs)
 
             self.has_printed = True
             self.print_queue.clear()
 
-            # This blocks until all jobs are done
+        else:
+            with ThreadPoolExecutor(max_workers=8) as executor:
+                futures =  [executor.submit(child.sync) for child in self]
+
+                # Wait for our turn to print
+                if self.parent is not None:
+                    while not self.parent.has_printed or \
+                        self != self.parent.children[self.parent.child_to_print]:
+                        time.sleep(0.01)
+
+                # Flush print buffer
+                for args, kwargs in self.print_queue:
+                    print(*args, flush=True, **kwargs)
+
+                self.has_printed = True
+                self.print_queue.clear()
+
+                # This blocks until all jobs are done
 
         if self.parent is not None:
             self.parent.child_to_print += 1
@@ -229,5 +251,4 @@ class CanvasEntity(object):
 
     def _make_folder(self):
         """ Create a folder on the sync path if not already present """
-        if not os.path.exists(self.sync_path):
-            os.mkdir(self.sync_path)
+        os.makedirs(self.sync_path, exist_ok=True)
