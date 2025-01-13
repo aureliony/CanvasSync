@@ -25,8 +25,8 @@ import os
 from CanvasSync.entities.assignments_folder import AssignmentsFolder
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.folder import Folder
+from CanvasSync.entities.isolated_page import IsolatedPage
 from CanvasSync.entities.module import Module
-from CanvasSync.entities.page import Page
 from CanvasSync.utilities import helpers
 from CanvasSync.utilities.ANSI import ANSI
 
@@ -126,7 +126,7 @@ class Course(CanvasEntity):
         os.makedirs(pages_path, exist_ok=True)
 
         for page_info in pages:
-            page = Page(page_info, self, page_path=pages_path)
+            page = IsolatedPage(page_info, self.id, pages_path, self)
             self.add_child(page)
 
     def sync(self):

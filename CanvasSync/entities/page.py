@@ -30,7 +30,7 @@ from CanvasSync.utilities.ANSI import ANSI
 
 
 class Page(CanvasEntity):
-    def __init__(self, page_info, parent, page_path=None):
+    def __init__(self, page_info, parent):
         """
         Constructor method, initializes base CanvasEntity class
 
@@ -47,8 +47,7 @@ class Page(CanvasEntity):
 
         page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
         page_name = helpers.get_corrected_name(self.page_item_info[u"title"])
-        if page_path is None:
-            page_path = parent.get_path()
+        page_path = parent.get_path()
 
         # Initialize base class
         CanvasEntity.__init__(self,
@@ -107,9 +106,10 @@ class Page(CanvasEntity):
     def download(self):
         """ Download the page """
         # Download additional info and HTML body of the Page object if not already supplied
-        page_info = self.api.download_item_information(self.page_item_info[u"url"]) if not self.page_info else self.page_info
-        # Cache the downloaded data
-        self.page_info = page_info.copy()
+        if self.page_info is None:
+            self.page_info = self.api.download_item_information(self.page_item_info[u"url"])
+
+        page_info = self.page_info.copy()
 
         # Create a HTML page locally and add a link leading to the live version
         body = page_info.pop(u"body", "")
