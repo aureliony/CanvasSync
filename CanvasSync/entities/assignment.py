@@ -19,7 +19,6 @@ of entity objects.
 """
 
 # Inbuilt modules
-import io
 import os
 import re
 
@@ -56,8 +55,7 @@ class Assignment(CanvasEntity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format(u"[SYNCED]", formatting=u"green")
-        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
+        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" \
                                                                    % (ANSI.format(u"Assignment", formatting=u"assignment"),
                                                                       self.name)
 
@@ -140,9 +138,8 @@ class Assignment(CanvasEntity):
         1) Adding all File and LinkedFile objects to the list of children
         2) Synchronize all children objects
         """
-        self.print(str(self))
-
         self.add_files()
         self.make_html()
+        self.print_status(u"SYNCED", color=u"green")
 
         super().sync()
