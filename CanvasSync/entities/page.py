@@ -30,7 +30,7 @@ from CanvasSync.utilities.ANSI import ANSI
 
 
 class Page(CanvasEntity):
-    def __init__(self, page_info, parent):
+    def __init__(self, page_info, parent, page_path=None):
         """
         Constructor method, initializes base CanvasEntity class
 
@@ -47,7 +47,8 @@ class Page(CanvasEntity):
 
         page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
         page_name = helpers.get_corrected_name(self.page_item_info[u"title"])
-        page_path = parent.get_path()
+        if page_path is None:
+            page_path = parent.get_path()
 
         # Initialize base class
         CanvasEntity.__init__(self,

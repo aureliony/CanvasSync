@@ -17,6 +17,7 @@ The InstructureApi object implements various methods that will fetch resources f
 modules and files that the user has authentication to access.
 """
 import json
+
 import requests
 
 
@@ -146,6 +147,14 @@ class InstructureApi(object):
         course_id : int | A course ID number
         """
         return self.get_json_list(u"/api/v1/courses/%s/assignments?per_page=100" % course_id)
+
+    def get_pages_in_course(self, course_id):
+        """
+        Returns a list of dictionaries of information on assignment objects under a course ID
+
+        course_id : int | A course ID number
+        """
+        return self.get_json_list(u"/api/v1/courses/%s/pages" % course_id)
 
     def download_page_information(self, course_id, page_id):
         """

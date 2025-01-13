@@ -26,6 +26,7 @@ from CanvasSync.entities.assignments_folder import AssignmentsFolder
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.folder import Folder
 from CanvasSync.entities.module import Module
+from CanvasSync.entities.page import Page
 from CanvasSync.utilities import helpers
 from CanvasSync.utilities.ANSI import ANSI
 
@@ -113,6 +114,20 @@ class Course(CanvasEntity):
 
         folder = Folder(main_folder, self)
         self.add_child(folder)
+    
+    def download_pages(self):
+        """ Return a list of dictionaries representing page objects """
+        return self.api.get_pages_in_course(self.id)
+
+    def add_pages(self):
+        """ Add all Page objects to the children list """
+        pages_path = os.path.join(self.get_path(), "Pages")
+        pages = self.download_pages()
+        os.makedirs(pages_path, exist_ok=True)
+
+        for page_info in pages:
+            page = Page(page_info, self, page_path=pages_path)
+            self.add_child(page)
 
     def sync(self):
         """
@@ -128,6 +143,7 @@ class Course(CanvasEntity):
 
         if not list(self.settings.modules_settings.values()) == [False, False, False]:
             self.add_modules()
+            self.add_pages()
 
         if self.settings.sync_assignments:
             # Add an AssignmentsFolder if at least one assignment is found under the course
