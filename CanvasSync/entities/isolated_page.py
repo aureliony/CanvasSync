@@ -41,4 +41,4 @@ class IsolatedPage(Page):
     def download(self):
         """ Download the page """
         self.page_info = self.api.download_page_information(self.course_id, self.id)
-        super().download()
+        return super().download()
