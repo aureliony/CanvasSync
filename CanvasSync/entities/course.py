@@ -123,7 +123,8 @@ class Course(CanvasEntity):
         """ Add all Page objects to the children list """
         pages_path = os.path.join(self.get_path(), "Pages")
         pages = self.download_pages()
-        os.makedirs(pages_path, exist_ok=True)
+        if pages:
+            os.makedirs(pages_path, exist_ok=True)
 
         for page_info in pages:
             page = IsolatedPage(page_info, self.id, pages_path, self)
