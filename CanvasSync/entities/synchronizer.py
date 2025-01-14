@@ -20,7 +20,6 @@ The Synchronizer encapsulates a list of children Course objects.
 # CanvasSync modules
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.course import Course
-from CanvasSync.utilities import helpers
 
 
 class Synchronizer(CanvasEntity):
@@ -35,9 +34,6 @@ class Synchronizer(CanvasEntity):
 
         if not settings.is_loaded():
             settings.load_settings("")
-
-        # Start sync by clearing the console window
-        helpers.clear_console()
 
         # Get the corrected top-level sync path
         sync_path = settings.sync_path
