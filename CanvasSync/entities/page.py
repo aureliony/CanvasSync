@@ -112,7 +112,7 @@ class Page(CanvasEntity):
         page_info = self.page_info.copy()
 
         # Create a HTML page locally and add a link leading to the live version
-        body = page_info.pop(u"body", "")
+        body = page_info.pop(u"body", page_info.pop(u"description", ""))
         html_url = self.page_info.get(u"html_url", "")
 
         if self.download_linked_files(body):
