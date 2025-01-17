@@ -93,7 +93,7 @@ class LinkedFile(CanvasEntity):
             return -1
 
         # Check for OK 200 HTTP response
-        if not response.status_code == 200:
+        if response.status_code != 200:
             self.print_status(u"FAILED", u"red")
             return -1
 
