@@ -14,11 +14,12 @@ A collection of small static helper-functions used in various modules of CanvasS
 # - Improve domain validation check, it is quite limit at this moment
 # - (find better solution to sub-folder problem than the reorganize function?)
 
-# Inbuilt modules
 import os
+from typing import Callable
 
-# Third party modules
 import requests
+
+from json2html import json2html
 
 
 def reorganize(items):
@@ -133,3 +134,37 @@ def validate_token(domain, token):
         return False
     else:
         return True
+
+def make_html(
+    name: str,
+    body: str,
+    page_info: dict[str, str],
+    output_path: str,
+    print_func: Callable[[str, str], None]
+) -> bool:
+    """
+    Create a HTML page locally and add a link leading to the live version
+    """
+    url = page_info.get(u"html_url", "")
+    new_content = (
+        u"<h1><strong>%s</strong></h1>" % name
+        + u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % url
+        + u"<hr>"
+        + body
+        + (u"<hr>" if body else "")
+        + json2html.convert(json=page_info) # Add the page metadata as a table
+    )
+
+    if os.path.exists(output_path):
+        with open(output_path, "r", encoding="utf-8") as existing_file:
+            old_content = existing_file.read()
+    else:
+        old_content = None
+
+    if old_content != new_content:
+        print_func(u"DOWNLOADING", color=u"blue")
+        with open(output_path, "w", encoding="utf-8") as out_file:
+            out_file.write(new_content)
+        return True
+
+    return False

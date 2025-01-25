@@ -20,8 +20,6 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 import os
 import re
 
-from json2html import json2html
-
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.entities.file import File
 from CanvasSync.entities.linked_file import LinkedFile
@@ -110,10 +108,7 @@ class Page(CanvasEntity):
             self.page_info = self.api.download_item_information(self.page_item_info[u"url"])
 
         page_info = self.page_info.copy()
-
-        # Create a HTML page locally and add a link leading to the live version
         body = page_info.pop(u"body", page_info.pop(u"description", ""))
-        html_url = self.page_info.get(u"html_url", "")
 
         if self.download_linked_files(body):
             # There are linked files, make the html in a new folder
@@ -121,27 +116,13 @@ class Page(CanvasEntity):
             self._make_folder()
 
         output_path = os.path.join(self.sync_path, self.name + ".html")
-
-        new_content = (
-            u"<h1><strong>%s</strong></h1>" % self.name
-            + u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url
-            + u"<hr>"
-            + (body or u"")
-            + (u"<hr>" if body else "")
-            + json2html.convert(json=page_info) # Add the page metadata as a table
+        helpers.make_html(
+            self.name,
+            body,
+            page_info,
+            output_path,
+            self.print_status
         )
-
-        if os.path.exists(output_path):
-            with open(output_path, "r", encoding="utf-8") as existing_file:
-                old_content = existing_file.read()
-        else:
-            old_content = None
-
-        if old_content != new_content:
-            self.print_status(u"DOWNLOADING", color=u"blue")
-            with open(output_path, "w", encoding="utf-8") as out_file:
-                out_file.write(new_content)
-
         return True
 
     def sync(self):

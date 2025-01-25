@@ -208,7 +208,7 @@ class CanvasEntity(object):
     def print(self, *args, **kwargs):
         self.print_queue.append((args, kwargs))
 
-    def print_status(self, status, color):
+    def print_status(self, status: str, color: str):
         """ Print status to console """
         self.print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
 

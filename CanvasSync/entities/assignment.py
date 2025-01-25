@@ -62,29 +62,15 @@ class Assignment(CanvasEntity):
     def make_html(self):
         """ Create the main HTML description page of the assignment """
         # Create URL pointing to Canvas live version of the assignment
-        html_url = self.settings.domain + u"/courses/%s/assignments/%s" % (self.get_parent().get_parent().get_id(),
-                                                                      self.get_id())
-        body = self.assignment_info.get(u"description") or u"No description"
-
+        body = self.assignment_info.pop(u"description", u"No description")
         output_path = os.path.join(self.sync_path, self.name + u".html")
-
-        new_content = (
-            u"<h1><strong>%s</strong></h1>" % self.name
-            + u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url
-            + u"<hr>"
-            + (body or u"")
+        helpers.make_html(
+            self.name,
+            body,
+            self.assignment_info,
+            output_path,
+            self.print_status
         )
-
-        if os.path.exists(output_path):
-            with open(output_path, "r", encoding="utf-8") as existing_file:
-                old_content = existing_file.read()
-        else:
-            old_content = None
-
-        if old_content != new_content:
-            self.print_status(u"DOWNLOADING", color=u"blue")
-            with open(output_path, "w", encoding="utf-8") as out_file:
-                out_file.write(new_content)
 
 
     def add_files(self):
