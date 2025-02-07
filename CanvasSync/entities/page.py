@@ -108,7 +108,7 @@ class Page(CanvasEntity):
             self.page_info = self.api.download_item_information(self.page_item_info[u"url"])
 
         page_info = self.page_info.copy()
-        body = page_info.pop(u"body", page_info.pop(u"description", ""))
+        body = page_info.pop(u"body", page_info.pop(u"description", "")) or ""
 
         if self.download_linked_files(body):
             # There are linked files, make the html in a new folder

@@ -62,7 +62,7 @@ class Assignment(CanvasEntity):
     def make_html(self):
         """ Create the main HTML description page of the assignment """
         # Create URL pointing to Canvas live version of the assignment
-        body = self.assignment_info.pop(u"description", u"No description")
+        body = self.assignment_info.pop(u"description") or u"No description"
         output_path = os.path.join(self.sync_path, self.name + u".html")
         helpers.make_html(
             self.name,
