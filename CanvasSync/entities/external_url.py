@@ -24,7 +24,10 @@ import os
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.utilities import helpers
 from CanvasSync.utilities.ANSI import ANSI
-from CanvasSync.utilities.url_shortcut_maker import make_url_shortcut
+from CanvasSync.utilities.url_utilities import (
+    download_url_content,
+    make_url_shortcut,
+)
 
 
 class ExternalUrl(CanvasEntity):
@@ -58,14 +61,19 @@ class ExternalUrl(CanvasEntity):
 
     def sync(self):
         """
-        Synchronize by creating a local URL shortcut file in in at the sync_pat
+        Synchronize by creating a local URL shortcut file in in at the sync_path
         ExternalUrl objects have no children objects and represents an end point of a folder traverse.
         """
-        make_url_shortcut(url=self.url_info[u"external_url"], path=self.sync_path)
+        url, path = self.url_info[u"external_url"], self.sync_path
+        if make_url_shortcut(url, path):
+            self.print_status(u"URL UPDATED", color=u"blue")
+
+        if download_url_content(url, path):
+            self.print_status(u"DOWNLOADING", color=u"blue")
 
         # As opposed to the File and Page classes we never write the "DOWNLOAD" status as we already have
         # all information needed to create the URL shortcut at this point. Here we just print the SYNCED status
         # no matter if the shortcut was recreated or not
-        self.print(ANSI.format(u"[SYNCED]", formatting=u"green") + str(self)[len(u"[SYNCED]"):])
+        self.print_status(u"SYNCED", color=u"green")
 
         super().sync()
