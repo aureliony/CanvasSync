@@ -3,14 +3,9 @@ from setuptools import setup
 
 from CanvasSync._version import __version__
 
-with open('README.md') as readme_file:
-    readme = readme_file.read()
-
-with open('CHANGES.txt') as readme_file:
-    changes = readme_file.read()
-
-with open("requirements.txt") as req_file:
-    requirements = list(filter(None, req_file.read().split("\n")))
+readme = open('README.md').read()
+changes = open('CHANGES.txt').read()
+requirements = list(filter(None, open("requirements.txt").read().split("\n")))
 
 
 setup(

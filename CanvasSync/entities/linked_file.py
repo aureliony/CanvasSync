@@ -98,8 +98,7 @@ class LinkedFile(CanvasEntity):
             return -1
 
         # If here, download was successful, write to disk and print status
-        with open(self.sync_path, u"wb") as out_file:
-            out_file.write(response.content)
+        open(self.sync_path, u"wb").write(response.content)
 
         return True
 

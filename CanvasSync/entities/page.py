@@ -101,7 +101,7 @@ class Page(CanvasEntity):
 
         return sub_files
 
-    def download(self):
+    def download(self) -> bool:
         """ Download the page """
         # Download additional info and HTML body of the Page object if not already supplied
         if self.page_info is None:
@@ -116,14 +116,12 @@ class Page(CanvasEntity):
             self._make_folder()
 
         output_path = os.path.join(self.sync_path, self.name + ".html")
-        helpers.make_html(
+        return helpers.make_html(
             self.name,
             body,
             page_info,
-            output_path,
-            self.print_status
+            output_path
         )
-        return True
 
     def sync(self):
         """
@@ -132,8 +130,9 @@ class Page(CanvasEntity):
         Page objects have no children objects and represents an end point of a folder traverse.
         """
         if self.download():
-            self.print_status(u"SYNCED", color=u"green")
-        
+            self.print_status(u"DOWNLOAD", color=u"green")
+        self.print_status(u"SYNCED", color=u"green")
+
         for file in self:
             file.update_path()
 

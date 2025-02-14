@@ -59,17 +59,16 @@ class Assignment(CanvasEntity):
                                                                    % (ANSI.format(u"Assignment", formatting=u"assignment"),
                                                                       self.name)
 
-    def make_html(self):
+    def make_html(self) -> bool:
         """ Create the main HTML description page of the assignment """
         # Create URL pointing to Canvas live version of the assignment
         body = self.assignment_info.pop(u"description") or u"No description"
         output_path = os.path.join(self.sync_path, self.name + u".html")
-        helpers.make_html(
+        return helpers.make_html(
             self.name,
             body,
             self.assignment_info,
-            output_path,
-            self.print_status
+            output_path
         )
 
 
@@ -125,7 +124,8 @@ class Assignment(CanvasEntity):
         2) Synchronize all children objects
         """
         self.add_files()
-        self.make_html()
-        self.print_status(u"SYNCED", color=u"green")
+        if self.make_html():
+            self.print_status(u"DOWNLOADING", color=u"blue")
 
+        self.print_status(u"SYNCED", color=u"green")
         super().sync()

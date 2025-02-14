@@ -94,8 +94,7 @@ class Settings(object):
             self.set_settings()
             return True
 
-        with open(self.settings_path, u"rb") as settings_f:
-            encrypted_message = settings_f.read()
+        encrypted_message = open(self.settings_path, u"rb").read()
         messages = decrypt(encrypted_message, password)
         if not messages:
             # Password file did not exist, set new settings

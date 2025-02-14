@@ -139,8 +139,7 @@ def make_html(
     name: str,
     body: str,
     page_info: dict[str, str],
-    output_path: str,
-    print_func: Callable[[str, str], None]
+    output_path: str
 ) -> bool:
     """
     Create a HTML page locally and add a link leading to the live version
@@ -156,15 +155,12 @@ def make_html(
     )
 
     if os.path.exists(output_path):
-        with open(output_path, "r", encoding="utf-8") as existing_file:
-            old_content = existing_file.read()
+        old_content = open(output_path, "r", encoding="utf-8").read()
     else:
         old_content = None
 
     if old_content != new_content:
-        print_func(u"DOWNLOADING", color=u"blue")
-        with open(output_path, "w", encoding="utf-8") as out_file:
-            out_file.write(new_content)
+        open(output_path, "w", encoding="utf-8").write(new_content)
         return True
 
     return False

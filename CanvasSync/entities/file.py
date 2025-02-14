@@ -63,15 +63,10 @@ class File(CanvasEntity):
         server_time_modified = datetime.strptime(self.file_info["modified_at"], "%Y-%m-%dT%H:%M:%SZ")
 
         if os.path.exists(self.sync_path):
-            local_time_modified = datetime.fromtimestamp(os.path.getmtime(self.sync_path)) \
-                                                    .replace(microsecond=0) # Remove milliseconds as Canvas API only returns seconds
-
+            local_time_modified = datetime.fromtimestamp(os.path.getmtime(self.sync_path))
             if server_time_modified <= local_time_modified:
                 # local file is up-to-date
                 return False
-
-            # delete the local outdated file
-            os.remove(self.sync_path)
 
         self.print_status(u"DOWNLOADING", color=u"blue")
 
@@ -80,8 +75,7 @@ class File(CanvasEntity):
 
         # Write data to file
         try:
-            with open(self.sync_path, u"wb") as out_file:
-                out_file.write(file_data)
+            open(self.sync_path, u"wb").write(file_data)
 
             # Set the accessed and modified time to the same as the server file
             modtime = server_time_modified.timestamp()
