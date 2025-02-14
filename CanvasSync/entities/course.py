@@ -76,7 +76,10 @@ class Course(CanvasEntity):
         """ [HIDDEN]  Method that adds all Module objects to the list of Module objects """
 
         # Download list of dictionaries representing modules and add them all to the list of children
-        for position, module_info in enumerate(self.download_modules()):
+        modules = self.download_modules()
+        # Sort modules by id
+        modules = sorted(modules, key=lambda m: m['id'])
+        for position, module_info in enumerate(modules):
             module = Module(module_info, position+1, parent=self)
             self.add_child(module)
 
