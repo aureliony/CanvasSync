@@ -212,19 +212,22 @@ class CanvasEntity(object):
         """ Print status to console """
         self.print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
 
+    def _flush_print_queue(self):
+        for args, kwargs in self.print_queue:
+            print(*args, flush=True, **kwargs)
+
+        self.has_printed = True
+        self.print_queue.clear()
+
     def sync(self, threaded=True):
         if not threaded:
             for child in self:
                 child.sync()
 
-            for args, kwargs in self.print_queue:
-                print(*args, flush=True, **kwargs)
-
-            self.has_printed = True
-            self.print_queue.clear()
+            self._flush_print_queue()
 
         else:
-            with ThreadPoolExecutor(max_workers=8) as executor:
+            with ThreadPoolExecutor() as executor:
                 futures =  [executor.submit(child.sync) for child in self]
 
                 # Wait for our turn to print
@@ -233,13 +236,7 @@ class CanvasEntity(object):
                         self != self.parent.children[self.parent.child_to_print]:
                         time.sleep(0.01)
 
-                # Flush print buffer
-                for args, kwargs in self.print_queue:
-                    print(*args, flush=True, **kwargs)
-
-                self.has_printed = True
-                self.print_queue.clear()
-
+                self._flush_print_queue()
                 # This blocks until all jobs are done
 
         if self.parent is not None:
