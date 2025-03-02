@@ -227,17 +227,20 @@ class CanvasEntity(object):
             self._flush_print_queue()
 
         else:
-            with ThreadPoolExecutor() as executor:
-                futures =  [executor.submit(child.sync) for child in self]
+            executor = ThreadPoolExecutor()
+            futures =  [executor.submit(child.sync) for child in self]
 
-                # Wait for our turn to print
-                if self.parent is not None:
-                    while not self.parent.has_printed or \
-                        self != self.parent.children[self.parent.child_to_print]:
-                        time.sleep(0.01)
+            # Wait for our turn to print
+            if self.parent is not None:
+                while not self.parent.has_printed or \
+                    self != self.parent.children[self.parent.child_to_print]:
+                    time.sleep(0.01)
 
-                self._flush_print_queue()
-                # This blocks until all jobs are done
+            self._flush_print_queue()
+            for future in futures:
+                future.result() # Propagate exceptions if present
+
+            executor.shutdown() # This blocks until all jobs are done
 
         if self.parent is not None:
             self.parent.child_to_print += 1
