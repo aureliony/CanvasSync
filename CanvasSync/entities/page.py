@@ -130,7 +130,7 @@ class Page(CanvasEntity):
         Page objects have no children objects and represents an end point of a folder traverse.
         """
         if self.download():
-            self.print_status(u"DOWNLOADING", color=u"green")
+            self.print_status(u"DOWNLOADING", color=u"blue")
         self.print_status(u"SYNCED", color=u"green")
 
         for file in self:
