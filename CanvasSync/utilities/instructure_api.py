@@ -44,7 +44,12 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return json.loads(self._get(api_call).text)
+        response = self._get(api_call)
+        try:
+            return json.loads(response.text)
+
+        except json.JSONDecodeError:
+            print(response.text)
 
     def get_json_list(self, api_call):
         data = self.get_json(api_call)
