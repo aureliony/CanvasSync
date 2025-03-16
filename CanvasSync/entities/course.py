@@ -42,12 +42,12 @@ class Course(CanvasEntity):
 
         self.course_info = course_info
 
-        course_id = self.course_info[u"id"]
+        course_id = self.course_info["id"]
 
-        course_name = helpers.get_corrected_name(self.course_info[u"course_code"].split(";")[-1])
+        course_name = helpers.get_corrected_name(self.course_info["course_code"].split(";")[-1])
 
         if settings.use_nicknames:
-            course_name = self.course_info[u"name"]
+            course_name = self.course_info["name"]
 
         course_path = os.path.join(parent.get_path(), course_name)
 
@@ -59,14 +59,14 @@ class Course(CanvasEntity):
                               name=course_name,
                               sync_path=course_path,
                               parent=parent,
-                              identifier=u"course",
+                              identifier="course",
                               folder=self.to_be_synced)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format(u"[SYNCED]" if self.to_be_synced else u"[SKIPPED]", formatting=u"green" if self.to_be_synced else u"yellow")
-        return status + u" " * (7 if self.to_be_synced else 6) + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                        % (ANSI.format(u"Course", formatting=u"course"), self.name)
+        status = ANSI.format("[SYNCED]" if self.to_be_synced else "[SKIPPED]", formatting="green" if self.to_be_synced else "yellow")
+        return status + " " * (7 if self.to_be_synced else 6) + "|   " + "\t" * self.indent + "%s: %s" \
+                                                        % (ANSI.format("Course", formatting="course"), self.name)
 
     def download_modules(self):
         """ Returns a list of dictionaries representing module objects """
@@ -108,12 +108,12 @@ class Course(CanvasEntity):
 
         main_folder = None
         for folder in folders:
-            if folder[u"full_name"] == u"course files":
+            if folder["full_name"] == "course files":
                 main_folder = folder
                 break
 
         # Change name of folder
-        main_folder[u"name"] = u"Other Files"
+        main_folder["name"] = "Other Files"
 
         folder = Folder(main_folder, self)
         self.add_child(folder)

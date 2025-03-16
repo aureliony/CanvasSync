@@ -34,8 +34,8 @@ class IsolatedPage(Page):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"Isolated Page",
-                                                                                    formatting=u"page"),
+        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" % (ANSI.format("Isolated Page",
+                                                                                    formatting="page"),
                                                                         self.name)
 
     def download(self):

@@ -40,8 +40,8 @@ class ExternalUrl(CanvasEntity):
         """
         self.url_info = url_info
 
-        url_id = self.url_info[u"id"]
-        url_name = helpers.get_corrected_name(self.url_info[u"title"])
+        url_id = self.url_info["id"]
+        url_name = helpers.get_corrected_name(self.url_info["title"])
         url_path = os.path.join(parent.get_path(), url_name)
 
         # Initialize base class
@@ -51,12 +51,12 @@ class ExternalUrl(CanvasEntity):
                               sync_path=url_path,
                               parent=parent,
                               folder=False,
-                              identifier=u"external_url")
+                              identifier="external_url")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"ExternalUrl",
-                                                                                    formatting=u"externalurl"),
+        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" % (ANSI.format("ExternalUrl",
+                                                                                    formatting="externalurl"),
                                                                         self.name)
 
     def sync(self):
@@ -64,16 +64,16 @@ class ExternalUrl(CanvasEntity):
         Synchronize by creating a local URL shortcut file in in at the sync_path
         ExternalUrl objects have no children objects and represents an end point of a folder traverse.
         """
-        url, path = self.url_info[u"external_url"], self.sync_path
+        url, path = self.url_info["external_url"], self.sync_path
         if make_url_shortcut(url, path):
-            self.print_status(u"URL UPDATED", color=u"blue")
+            self.print_status("URL UPDATED", color="blue")
 
         if download_url_content(url, path):
-            self.print_status(u"DOWNLOADING", color=u"blue")
+            self.print_status("DOWNLOADING", color="blue")
 
         # As opposed to the File and Page classes we never write the "DOWNLOAD" status as we already have
         # all information needed to create the URL shortcut at this point. Here we just print the SYNCED status
         # no matter if the shortcut was recreated or not
-        self.print_status(u"SYNCED", color=u"green")
+        self.print_status("SYNCED", color="green")
 
         super().sync()

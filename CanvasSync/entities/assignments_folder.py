@@ -36,7 +36,7 @@ class AssignmentsFolder(CanvasEntity):
 
         # Initialize entity with hardcoded ID and name, we always want the folder to be named "Assignments"
         assignments_folder_id = -1
-        assignments_folder_name = u"Assignments"
+        assignments_folder_name = "Assignments"
         assignments_folder_path = os.path.join(parent.get_path(), assignments_folder_name)
 
         # Initialize base class
@@ -45,14 +45,14 @@ class AssignmentsFolder(CanvasEntity):
                               name=assignments_folder_name,
                               sync_path=assignments_folder_path,
                               parent=parent,
-                              identifier=u"assignment_folder")
+                              identifier="assignment_folder")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format(u"[SYNCED]", formatting=u"green")
-        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format(u"Assignments Folder",
-                                                                                  formatting=u"assignments"),
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + " " * 7 + "|   " + "\t" * self.indent + "%s: %s" \
+                                                                   % (ANSI.format("Assignments Folder",
+                                                                                  formatting="assignments"),
                                                                       self.name)
 
     def add_assignments(self):

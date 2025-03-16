@@ -38,8 +38,8 @@ class File(CanvasEntity):
 
         self.locked = self.file_info["locked_for_user"]
 
-        file_id = self.file_info[u"id"]
-        file_name = helpers.get_corrected_name(self.file_info[u"display_name"])
+        file_id = self.file_info["id"]
+        file_name = helpers.get_corrected_name(self.file_info["display_name"])
         file_path = os.path.join(parent.get_path(), file_name)
 
         # Initialize base class
@@ -49,13 +49,13 @@ class File(CanvasEntity):
                               sync_path=file_path,
                               parent=parent,
                               folder=False,
-                              identifier=u"file",
+                              identifier="file",
                               add_to_list_of_entities=add_to_list_of_entities)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"File",
-                                                                                    formatting=u"file"),
+        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" % (ANSI.format("File",
+                                                                                    formatting="file"),
                                                                         self.name)
 
     def download(self):
@@ -68,14 +68,14 @@ class File(CanvasEntity):
                 # local file is up-to-date
                 return False
 
-        self.print_status(u"DOWNLOADING", color=u"blue")
+        self.print_status("DOWNLOADING", color="blue")
 
         # Download file payload from server
-        file_data = self.api.download_file_payload(self.file_info[u"url"])
+        file_data = self.api.download_file_payload(self.file_info["url"])
 
         # Write data to file
         try:
-            open(self.sync_path, u"wb").write(file_data)
+            open(self.sync_path, "wb").write(file_data)
 
             # Set the accessed and modified time to the same as the server file
             modtime = server_time_modified.timestamp()
@@ -99,9 +99,9 @@ class File(CanvasEntity):
         """
         if not self.locked:
             self.download()
-            self.print_status(u"SYNCED", color=u"green")
+            self.print_status("SYNCED", color="green")
 
         else:
-            self.print_status(u"LOCKED", color=u"red")
+            self.print_status("LOCKED", color="red")
 
         super().sync()

@@ -37,23 +37,23 @@ class SubHeader(Module):
 
         # Add 'title' value to new key 'name' as this is the key used in the
         # Module object
-        self.folder_info[u"name"] = self.folder_info[u"title"]
+        self.folder_info["name"] = self.folder_info["title"]
 
         # Initialize base Module class
         super().__init__(
             module_info=folder_info,
             module_position=folder_position,
             parent=parent,
-            identifier=u"sub_header"
+            identifier="sub_header"
         )
 
         self.items = items
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format(u"[SYNCED]", formatting=u"green")
-        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format(u"Sub header", formatting=u"subheader"),
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + " " * 7 + "|   " + "\t" * self.indent + "%s: %s" \
+                                                                   % (ANSI.format("Sub header", formatting="subheader"),
                                                                       self.name)
 
     def sync(self):

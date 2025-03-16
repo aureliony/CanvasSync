@@ -33,7 +33,7 @@ BLACKLISTED_DOMAINS = [
 
 
 def _make_mac_url_shortcut(url: str, path: str):
-    url_content = u"""<?xml version="1.0" encoding="UTF-8"?>
+    url_content = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -41,35 +41,35 @@ def _make_mac_url_shortcut(url: str, path: str):
 <string>%s</string>
 </dict>
 </plist>""" % url
-    filepath = path + u".webloc"
+    filepath = path + ".webloc"
     return url_content.encode("utf-8"), filepath
 
 
 def _make_linux_url_shortcut(url: str, path: str):
     name = os.path.split(url)[-1]
-    url_content = u"""[Desktop Entry]
+    url_content = """[Desktop Entry]
 Encoding=UTF-8
 Name=%s
 Type=Link
 URL=%s
 Icon=text-html""" % (name, url)
-    filepath = path + u".desktop"
+    filepath = path + ".desktop"
     return url_content.encode("utf-8"), filepath
 
 
 def _make_windows_url_shortcut(url: str, path: str):
-    url_content = u"""[InternetShortcut]
+    url_content = """[InternetShortcut]
 URL=%s""" % url
-    filepath = path + u".url"
+    filepath = path + ".url"
     return url_content.encode("utf-8"), filepath
 
 
 def make_url_shortcut(url, path):
     system = sys.platform.lower()
 
-    if system == u"darwin":
+    if system == "darwin":
         new_content, filepath = _make_mac_url_shortcut(url, path)
-    elif u"linux" in system:
+    elif "linux" in system:
         new_content, filepath = _make_linux_url_shortcut(url, path)
     else:
         new_content, filepath = _make_windows_url_shortcut(url, path)

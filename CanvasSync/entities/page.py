@@ -41,10 +41,10 @@ class Page(CanvasEntity):
         # body, which will be downloaded in the self.download() method. The slightly messy code below makes the class
         # functional with either information supplied.
         self.page_item_info = page_info
-        self.page_info = self.page_item_info if u"id" not in self.page_item_info else None
+        self.page_info = self.page_item_info if "id" not in self.page_item_info else None
 
-        page_id = self.page_item_info[u"id"] if not self.page_info else self.page_info[u"page_id"]
-        page_name = helpers.get_corrected_name(self.page_item_info[u"title"])
+        page_id = self.page_item_info["id"] if not self.page_info else self.page_info["page_id"]
+        page_name = helpers.get_corrected_name(self.page_item_info["title"])
         page_path = parent.get_path()
 
         # Initialize base class
@@ -54,12 +54,12 @@ class Page(CanvasEntity):
                               sync_path=page_path,
                               parent=parent,
                               folder=False,
-                              identifier=u"page")
+                              identifier="page")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"Page",
-                                                                                    formatting=u"page"),
+        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" % (ANSI.format("Page",
+                                                                                    formatting="page"),
                                                                         self.name)
 
     def download_linked_files(self, html_body):
@@ -102,10 +102,10 @@ class Page(CanvasEntity):
         """ Download the page """
         # Download additional info and HTML body of the Page object if not already supplied
         if self.page_info is None:
-            self.page_info = self.api.download_item_information(self.page_item_info[u"url"])
+            self.page_info = self.api.download_item_information(self.page_item_info["url"])
 
         page_info = self.page_info.copy()
-        body = page_info.pop(u"body", page_info.pop(u"description", "")) or ""
+        body = page_info.pop("body", page_info.pop("description", "")) or ""
 
         if self.download_linked_files(body):
             # There are linked files, make the html in a new folder
@@ -127,8 +127,8 @@ class Page(CanvasEntity):
         Page objects have no children objects and represents an end point of a folder traverse.
         """
         if self.download():
-            self.print_status(u"DOWNLOADING", color=u"blue")
-        self.print_status(u"SYNCED", color=u"green")
+            self.print_status("DOWNLOADING", color="blue")
+        self.print_status("SYNCED", color="green")
 
         for file in self:
             file.update_path()

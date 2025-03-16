@@ -49,21 +49,21 @@ from CanvasSync.utilities.instructure_api import InstructureApi
 
 class Settings(object):
     def __init__(self):
-        self.sync_path = u"Not set"
-        self.domain = u"Not set"
-        self.token = u"Not set"
-        self.courses_to_sync = [u"Not set"]
-        self.modules_settings = {u"Files": True,
-                                 u"HTML pages": True,
-                                 u"External URLs": True}
+        self.sync_path = "Not set"
+        self.domain = "Not set"
+        self.token = "Not set"
+        self.courses_to_sync = ["Not set"]
+        self.modules_settings = {"Files": True,
+                                 "HTML pages": True,
+                                 "External URLs": True}
         self.sync_assignments = True
         self.download_linked = True
         self.avoid_duplicates = True
         self.use_nicknames = False
 
         # Get the path pointing to the settings file.
-        self.settings_path = os.path.abspath(os.path.expanduser(u"~")
-                                             + u"/.CanvasSync.settings")
+        self.settings_path = os.path.abspath(os.path.expanduser("~")
+                                             + "/.CanvasSync.settings")
 
         # Initialize user prompt class, used to get information from the user
         # via the terminal
@@ -77,10 +77,10 @@ class Settings(object):
         return os.path.exists(self.settings_path)
 
     def is_loaded(self):
-        return self.sync_path != u"Not set" and \
-               self.domain != u"Not set" and \
-               self.token != u"Not set" and \
-               self.courses_to_sync[0] != u"Not set"
+        return self.sync_path != "Not set" and \
+               self.domain != "Not set" and \
+               self.token != "Not set" and \
+               self.courses_to_sync[0] != "Not set"
 
     def load_settings(self, password):
         """
@@ -94,46 +94,46 @@ class Settings(object):
             self.set_settings()
             return True
 
-        encrypted_message = open(self.settings_path, u"rb").read()
+        encrypted_message = open(self.settings_path, "rb").read()
         messages = decrypt(encrypted_message, password)
         if not messages:
             # Password file did not exist, set new settings
-            print(ANSI.format(u"\n[ERROR] The hashed password file does not"
-                              u"longer exist. You must re-enter settings.",
-                              u"announcer"))
-            input(u"\nPres enter to continue.")
+            print(ANSI.format("\n[ERROR] The hashed password file does not"
+                              "longer exist. You must re-enter settings.",
+                              "announcer"))
+            input("\nPres enter to continue.")
             self.set_settings()
             return self.load_settings("")
         else:
-            messages = messages.decode(u"utf-8").split(u"\n")
+            messages = messages.decode("utf-8").split("\n")
 
         # Set sync path, domain and auth token
         self.sync_path, self.domain, self.token = messages[:3]
 
         def read_setting(settings_string):
-            return settings_string.split(u"$")[-1] == u"True"
+            return settings_string.split("$")[-1] == "True"
 
         # Extract synchronization settings
         for message in messages:
-            if message[:12] == u"SYNC COURSE$":
-                if self.courses_to_sync[0] == u"Not set":
+            if message[:12] == "SYNC COURSE$":
+                if self.courses_to_sync[0] == "Not set":
                     self.courses_to_sync.pop(0)
-                self.courses_to_sync.append(message.split(u"$")[-1])
+                self.courses_to_sync.append(message.split("$")[-1])
 
             setting = read_setting(message)
-            if message[:6] == u"Files$":
-                self.modules_settings[u"Files"] = setting
-            if message[:11] == u"HTML pages$":
-                self.modules_settings[u"HTML pages"] = setting
-            if message[:14] == u"External URLs$":
-                self.modules_settings[u"External URLs"] = setting
-            if message[:12] == u"Assignments$":
+            if message[:6] == "Files$":
+                self.modules_settings["Files"] = setting
+            if message[:11] == "HTML pages$":
+                self.modules_settings["HTML pages"] = setting
+            if message[:14] == "External URLs$":
+                self.modules_settings["External URLs"] = setting
+            if message[:12] == "Assignments$":
                 self.sync_assignments = setting
-            if message[:13] == u"Linked files$":
+            if message[:13] == "Linked files$":
                 self.download_linked = setting
-            if message[:17] == u"Avoid duplicates$":
+            if message[:17] == "Avoid duplicates$":
                 self.avoid_duplicates = setting
-            if message[:14] == u"Use nicknames$":
+            if message[:14] == "Use nicknames$":
                 self.use_nicknames = setting
 
         if not helpers.validate_token(self.domain, self.token):
@@ -145,7 +145,7 @@ class Settings(object):
         try:
             self._set_settings()
         except KeyboardInterrupt:
-            print(ANSI.format(u"\n\n[*] Setup interrupted, nothing was saved.", formatting=u"red"))
+            print(ANSI.format("\n\n[*] Setup interrupted, nothing was saved.", formatting="red"))
             sys.exit()
 
         self.write_settings()
@@ -189,21 +189,21 @@ class Settings(object):
     def write_settings(self):
         self.print_settings(first_time_setup=False, clear=True)
         self.print_advanced_settings(clear=False)
-        print(ANSI.format(u"\n\nThese settings will be saved", u"announcer"))
+        print(ANSI.format("\n\nThese settings will be saved", "announcer"))
 
         # Write password encrypted settings to hidden file in home directory
-        with open(self.settings_path, u"wb") as out_file:
-            settings = self.sync_path + u"\n" + self.domain + u"\n" + self.token + u"\n"
+        with open(self.settings_path, "wb") as out_file:
+            settings = self.sync_path + "\n" + self.domain + "\n" + self.token + "\n"
 
             for course in self.courses_to_sync:
-                settings += u"SYNC COURSE$" + course + u"\n"
+                settings += "SYNC COURSE$" + course + "\n"
 
-            settings += u"Files$" + str(self.modules_settings[u"Files"]) + u"\n"
-            settings += u"HTML pages$" + str(self.modules_settings[u"HTML pages"]) + u"\n"
-            settings += u"External URLs$" + str(self.modules_settings[u"External URLs"]) + u"\n"
-            settings += u"Assignments$" + str(self.sync_assignments) + u"\n"
-            settings += u"Linked files$" + str(self.download_linked) + u"\n"
-            settings += u"Avoid duplicates$" + str(self.avoid_duplicates) + u"\n"
+            settings += "Files$" + str(self.modules_settings["Files"]) + "\n"
+            settings += "HTML pages$" + str(self.modules_settings["HTML pages"]) + "\n"
+            settings += "External URLs$" + str(self.modules_settings["External URLs"]) + "\n"
+            settings += "Assignments$" + str(self.sync_assignments) + "\n"
+            settings += "Linked files$" + str(self.download_linked) + "\n"
+            settings += "Avoid duplicates$" + str(self.avoid_duplicates) + "\n"
 
             out_file.write(encrypt(settings))
 
@@ -215,24 +215,24 @@ class Settings(object):
         if clear:
             helpers.clear_console()
 
-        print(ANSI.format(u"\nAdvanced settings", u"announcer"))
+        print(ANSI.format("\nAdvanced settings", "announcer"))
 
-        module_settings_string = ANSI.BOLD + u"[*] Sync module items:        \t" + ANSI.ENDC
+        module_settings_string = ANSI.BOLD + "[*] Sync module items:        \t" + ANSI.ENDC
 
         count = 0
         for item in self.modules_settings:
             if self.modules_settings[item]:
-                d = u" & " if count != 0 else u""
+                d = " & " if count != 0 else ""
                 module_settings_string += d + ANSI.BLUE + item + ANSI.ENDC
                 count += 1
 
         if count == 0:
-            module_settings_string += ANSI.RED + u"False" + ANSI.ENDC
+            module_settings_string += ANSI.RED + "False" + ANSI.ENDC
 
         print(module_settings_string)
-        print(ANSI.BOLD + u"[*] Sync assignments:         \t" + ANSI.ENDC + (ANSI.GREEN if self.sync_assignments else ANSI.RED) + str(self.sync_assignments) + ANSI.ENDC)
-        print(ANSI.BOLD + u"[*] Download linked files:    \t" + ANSI.ENDC + (ANSI.GREEN if self.download_linked else ANSI.RED) + str(self.download_linked) + ANSI.ENDC)
-        print(ANSI.BOLD + u"[*] Avoid item duplicates:    \t" + ANSI.ENDC + (ANSI.GREEN if self.avoid_duplicates else ANSI.RED) + str(self.avoid_duplicates) + ANSI.ENDC)
+        print(ANSI.BOLD + "[*] Sync assignments:         \t" + ANSI.ENDC + (ANSI.GREEN if self.sync_assignments else ANSI.RED) + str(self.sync_assignments) + ANSI.ENDC)
+        print(ANSI.BOLD + "[*] Download linked files:    \t" + ANSI.ENDC + (ANSI.GREEN if self.download_linked else ANSI.RED) + str(self.download_linked) + ANSI.ENDC)
+        print(ANSI.BOLD + "[*] Avoid item duplicates:    \t" + ANSI.ENDC + (ANSI.GREEN if self.avoid_duplicates else ANSI.RED) + str(self.avoid_duplicates) + ANSI.ENDC)
 
     def print_settings(self, first_time_setup=True, clear=True):
         """
@@ -243,28 +243,28 @@ class Settings(object):
             helpers.clear_console()
 
         if first_time_setup:
-            print(ANSI.format(u"This is a first time setup.\nYou must specify "
-                              u"at least the following settings"
-                              u" in order to run CanvasSync:\n", u"announcer"))
+            print(ANSI.format("This is a first time setup.\nYou must specify "
+                              "at least the following settings"
+                              " in order to run CanvasSync:\n", "announcer"))
         else:
-            print(ANSI.format(u"-----------------------------", u"file"))
-            print(ANSI.format(u"CanvasSync - Current settings", u"file"))
-            print(ANSI.format(u"-----------------------------\n", u"file"))
-            print(ANSI.format(u"Standard settings", u"announcer"))
+            print(ANSI.format("-----------------------------", "file"))
+            print(ANSI.format("CanvasSync - Current settings", "file"))
+            print(ANSI.format("-----------------------------\n", "file"))
+            print(ANSI.format("Standard settings", "announcer"))
 
-        print(ANSI.BOLD + u"[*] Sync path:             \t" + ANSI.ENDC + ANSI.BLUE + self.sync_path + ANSI.ENDC)
-        print(ANSI.BOLD + u"[*] Canvas domain:         \t" + ANSI.ENDC + ANSI.BLUE + self.domain + ANSI.ENDC)
-        print(ANSI.BOLD + u"[*] Authentication token:  \t" + ANSI.ENDC + ANSI.BLUE + self.token + ANSI.ENDC)
+        print(ANSI.BOLD + "[*] Sync path:             \t" + ANSI.ENDC + ANSI.BLUE + self.sync_path + ANSI.ENDC)
+        print(ANSI.BOLD + "[*] Canvas domain:         \t" + ANSI.ENDC + ANSI.BLUE + self.domain + ANSI.ENDC)
+        print(ANSI.BOLD + "[*] Authentication token:  \t" + ANSI.ENDC + ANSI.BLUE + self.token + ANSI.ENDC)
 
         if len(self.courses_to_sync) != 0:
-            if self.courses_to_sync[0] == u"Not set":
-                d = u""
+            if self.courses_to_sync[0] == "Not set":
+                d = ""
             else:
-                d = u"1) "
-            print(ANSI.BOLD + u"[*] Courses to be synced:  \t%s" % d + ANSI.ENDC + ANSI.BLUE + self.courses_to_sync[0] + ANSI.ENDC)
+                d = "1) "
+            print(ANSI.BOLD + "[*] Courses to be synced:  \t%s" % d + ANSI.ENDC + ANSI.BLUE + self.courses_to_sync[0] + ANSI.ENDC)
 
             for index, course in enumerate(self.courses_to_sync[1:]):
-                print(u" "*27 + u"\t%s) " % (index+2) + ANSI.BLUE + course + ANSI.ENDC)
+                print(" "*27 + "\t%s) " % (index+2) + ANSI.BLUE + course + ANSI.ENDC)
 
     def show(self, quit=True):
         """
@@ -282,18 +282,18 @@ class Settings(object):
         if quit:
             sys.exit()
         else:
-            input(u"\nHit enter to continue.")
+            input("\nHit enter to continue.")
 
     def print_auth_token_reset_error(self):
         """
         Prints error message for when the auth token stored in the
         settings is no longer valid
         """
-        print(u"\n\n[ERROR] The authentication token has been reset.\n"
-              u"        You must generate a new from the canvas webpage and"
-              u" reset the CanvasSync settings\n"
-              u"        using the --setup command line arguments or from the"
-              u" main menu.")
+        print("\n\n[ERROR] The authentication token has been reset.\n"
+              "        You must generate a new from the canvas webpage and"
+              " reset the CanvasSync settings\n"
+              "        using the --setup command line arguments or from the"
+              " main menu.")
 
     def show_main_screen(self, settings_file_exists):
         """

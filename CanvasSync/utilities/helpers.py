@@ -35,7 +35,7 @@ def reorganize(items):
     # If no items or the resource that was attempted to be accessed does not exists (for instance if a teacher makes
     # a sub-header with no items in it, accessing the file content of the sub-header will make the server respond with
     # and error report). In both cases return empty lists.
-    if (isinstance(items, dict) and list(items.keys())[0] == u"errors") or len(items) == 0:
+    if (isinstance(items, dict) and list(items.keys())[0] == "errors") or len(items) == 0:
         return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
@@ -49,17 +49,17 @@ def reorganize(items):
 
     # Get the indent level of the outer most scope, should be that of the 0th item in the list, but we check all here.
     try:
-        outer_indent = min([items[index][u"indent"] for index in range(len(items))])
+        outer_indent = min([items[index]["indent"] for index in range(len(items))])
     except KeyError:
         print(items)
 
     # Reorganize all items in 'items'
     for item in items:
         # Get the type of item and indent level
-        item_type = item[u"type"]
-        item_indent = item[u"indent"]
+        item_type = item["type"]
+        item_indent = item["indent"]
 
-        if item_type == u"SubHeader":
+        if item_type == "SubHeader":
             # If "SubHeader" the item is a sub-folder, add it to the list of sub-folders
             current_sub_folder_index += 1
             sub_folders.append([item])
@@ -75,7 +75,7 @@ def reorganize(items):
 
 def clear_console():
     """ Clears the console on UNIX and Windows """
-    os.system(u'cls' if os.name == u'nt' else u'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 
 def get_corrected_name(name):
@@ -103,17 +103,17 @@ def validate_domain(domain):
     interpreting the HTTP response
     """
     try:
-        response = requests.get(domain + u"/api/v1/courses", timeout=5)
+        response = requests.get(domain + "/api/v1/courses", timeout=5)
         if response.status_code==401:
             # If this response, the server exists and understands
             # the API call but complains that the call was
             # not authenticated - the URL represents a Canvas server
             return True
         else:
-            print(u"\n[ERROR] Not a valid Canvas web server. Wrong domain?")
+            print("\n[ERROR] Not a valid Canvas web server. Wrong domain?")
             return False
     except Exception:
-        print(u"\n[ERROR] Invalid domain.")
+        print("\n[ERROR] Invalid domain.")
         return False
 
 
@@ -123,14 +123,14 @@ def validate_token(domain, token):
     after the validate_domain function to make sure that errors arise from the token.
     """
     if len(token) < 20:
-        print(u"The server did not accept the authentication token.")
+        print("The server did not accept the authentication token.")
         return False
 
-    response = str(requests.get(domain + u"/api/v1/courses",
-                                headers={u'Authorization': u"Bearer %s" % token}).text)
+    response = str(requests.get(domain + "/api/v1/courses",
+                                headers={'Authorization': "Bearer %s" % token}).text)
 
-    if u"Invalid access token" in response:
-        print(u"The server did not accept the authentication token.")
+    if "Invalid access token" in response:
+        print("The server did not accept the authentication token.")
         return False
     else:
         return True
@@ -144,13 +144,13 @@ def make_html(
     """
     Create a HTML page locally and add a link leading to the live version
     """
-    url = page_info.get(u"html_url", "")
+    url = page_info.get("html_url", "")
     new_content = (
-        u"<h1><strong>%s</strong></h1>" % name
-        + u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % url
-        + u"<hr>"
+        "<h1><strong>%s</strong></h1>" % name
+        + "<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % url
+        + "<hr>"
         + body
-        + (u"<hr>" if body else "")
+        + ("<hr>" if body else "")
         + json2html.convert(json=page_info) # Add the page metadata as a table
     )
 

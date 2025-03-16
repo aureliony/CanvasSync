@@ -63,12 +63,12 @@ class LinkedFile(CanvasEntity):
                               sync_path=file_path,
                               parent=parent,
                               folder=False,
-                              identifier=u"linked_file")
+                              identifier="linked_file")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" % (ANSI.format(u"Linked File",
-                                                                                    formatting=u"linkedfile"),
+        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" % (ANSI.format("Linked File",
+                                                                                    formatting="linkedfile"),
                                                                         self.name)
 
     def url_is_valid(self):
@@ -82,23 +82,23 @@ class LinkedFile(CanvasEntity):
         if os.path.exists(self.sync_path):
             return False
 
-        self.print_status(u"DOWNLOADING", color=u"blue")
+        self.print_status("DOWNLOADING", color="blue")
 
         # Attempt to download the file
         try:
             response = requests.get(self.download_url)
         except Exception:
             # Could not download, catch any exception
-            self.print_status(u"FAILED", u"red")
+            self.print_status("FAILED", "red")
             return -1
 
         # Check for OK 200 HTTP response
         if response.status_code != 200:
-            self.print_status(u"FAILED", u"red")
+            self.print_status("FAILED", "red")
             return -1
 
         # If here, download was successful, write to disk and print status
-        open(self.sync_path, u"wb").write(response.content)
+        open(self.sync_path, "wb").write(response.content)
 
         return True
 
@@ -110,6 +110,6 @@ class LinkedFile(CanvasEntity):
         was_downloaded = self.download()
 
         if was_downloaded != - 1:
-            self.print_status(u"SYNCED", color=u"green")
+            self.print_status("SYNCED", color="green")
 
         super().sync()

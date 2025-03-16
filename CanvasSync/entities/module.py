@@ -28,7 +28,7 @@ from CanvasSync.utilities.ANSI import ANSI
 
 
 class Module(CanvasEntity):
-    def __init__(self, module_info, module_position, parent, identifier=u"module"):
+    def __init__(self, module_info, module_position, parent, identifier="module"):
         """, i
         Constructor method, initializes base CanvasEntity class and adds all children Folder and/or Item objects to the
         list of children
@@ -40,9 +40,9 @@ class Module(CanvasEntity):
 
         self.module_info = module_info
 
-        module_id = self.module_info[u"id"]
-        module_name = helpers.get_corrected_name(self.module_info[u"name"])
-        module_path = os.path.join(parent.get_path(), u"%s - %s" % (module_position, module_name))
+        module_id = self.module_info["id"]
+        module_name = helpers.get_corrected_name(self.module_info["name"])
+        module_path = os.path.join(parent.get_path(), "%s - %s" % (module_position, module_name))
 
         # Initialize base class
         CanvasEntity.__init__(self,
@@ -54,9 +54,9 @@ class Module(CanvasEntity):
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format(u"[SYNCED]", formatting=u"green")
-        return (status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s"
-                                                                   % (ANSI.format(u"Module", formatting=u"module"),
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return (status + " " * 7 + "|   " + "\t" * self.indent + "%s: %s"
+                                                                   % (ANSI.format("Module", formatting="module"),
                                                                       self.name))
 
     def get_item_information(self):
@@ -85,7 +85,7 @@ class Module(CanvasEntity):
         Method that adds an Item object to the list of children and synchronizes it
         """
 
-        detailed_file_info = self.api.download_item_information(file_information[u"url"])
+        detailed_file_info = self.api.download_item_information(file_information["url"])
 
         # Initialize Item object and add to list of children
         if detailed_file_info:
@@ -129,11 +129,11 @@ class Module(CanvasEntity):
 
         # Add all non-sub-folder items to the list of children. Currently, files, HTML pages and URLs are added.
         for item in items_in_this_scope:
-            if item[u"type"] == u"File" and self.settings.modules_settings[u"Files"]:
+            if item["type"] == "File" and self.settings.modules_settings["Files"]:
                 self.add_file(item)
-            elif item[u"type"] in [u"Page", u"Quiz"] and self.settings.modules_settings[u"HTML pages"]:
+            elif item["type"] in ["Page", "Quiz"] and self.settings.modules_settings["HTML pages"]:
                 self.add_page(item)
-            elif item[u"type"] == u"ExternalUrl" and self.settings.modules_settings[u"External URLs"]:
+            elif item["type"] == "ExternalUrl" and self.settings.modules_settings["External URLs"]:
                 self.add_url(item)
 
         # Add all sub-folders as Folder objects to the list of children along with the items the folder contain

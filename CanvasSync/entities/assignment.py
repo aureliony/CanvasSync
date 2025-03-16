@@ -41,8 +41,8 @@ class Assignment(CanvasEntity):
         """
 
         self.assignment_info = assignment_info
-        assignment_id = self.assignment_info[u"id"]
-        assignment_name = helpers.get_corrected_name(assignment_info[u"name"])
+        assignment_id = self.assignment_info["id"]
+        assignment_name = helpers.get_corrected_name(assignment_info["name"])
         assignment_path = os.path.join(parent.get_path(), assignment_name)
 
         # Initialize base class
@@ -51,19 +51,19 @@ class Assignment(CanvasEntity):
                               name=assignment_name,
                               sync_path=assignment_path,
                               parent=parent,
-                              identifier=u"assignment")
+                              identifier="assignment")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u" " * 15 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format(u"Assignment", formatting=u"assignment"),
+        return " " * 15 + "|   " + "\t" * self.indent + "%s: %s" \
+                                                                   % (ANSI.format("Assignment", formatting="assignment"),
                                                                       self.name)
 
     def make_html(self) -> bool:
         """ Create the main HTML description page of the assignment """
         # Create URL pointing to Canvas live version of the assignment
-        body = self.assignment_info.pop(u"description") or u"No description"
-        output_path = os.path.join(self.sync_path, self.name + u".html")
+        body = self.assignment_info.pop("description") or "No description"
+        output_path = os.path.join(self.sync_path, self.name + ".html")
         return helpers.make_html(
             self.name,
             body,
@@ -87,9 +87,9 @@ class Assignment(CanvasEntity):
         for url in canvas_file_urls:
             file_info = self.api.download_item_information(url)
 
-            if u'display_name' in file_info:
+            if 'display_name' in file_info:
                 item = File(file_info, parent=self)
-            elif u'page_id' in file_info:
+            elif 'page_id' in file_info:
                 item = Page(file_info, parent=self)
             else:
                 # Unknown entity, skip it
@@ -107,7 +107,7 @@ class Assignment(CanvasEntity):
             # 2) We should stay clear of all links to web-sites
             #    (they could be large to download, we skip them here)
             urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"',
-                              self.assignment_info.get(u"description") or u"")
+                              self.assignment_info.get("description") or "")
 
             for url in urls:
                 linked_file = LinkedFile(url, parent=self)
@@ -123,7 +123,7 @@ class Assignment(CanvasEntity):
         """
         self.add_files()
         if self.make_html():
-            self.print_status(u"DOWNLOADING", color=u"blue")
+            self.print_status("DOWNLOADING", color="blue")
 
-        self.print_status(u"SYNCED", color=u"green")
+        self.print_status("SYNCED", color="green")
         super().sync()

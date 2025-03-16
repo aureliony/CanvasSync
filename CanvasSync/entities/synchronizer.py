@@ -45,16 +45,16 @@ class Synchronizer(CanvasEntity):
         # Initialize base class
         CanvasEntity.__init__(self,
                               id_number=-1,
-                              name=u"",
+                              name="",
                               sync_path=sync_path,
                               api=api,
                               settings=settings,
                               synchronizer=self,
-                              identifier=u"synchronizer")
+                              identifier="synchronizer")
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        return u"\n[*] Synchronizing to folder: %s\n" % self.sync_path
+        return "\n[*] Synchronizing to folder: %s\n" % self.sync_path
 
     def get_entities(self, course_id):
         """ Getter method for the list of Entities """
@@ -81,7 +81,7 @@ class Synchronizer(CanvasEntity):
 
             # Add an empty list to the entities dictionary that will
             # store entities when added
-            self.entities[course_information[u"id"]] = []
+            self.entities[course_information["id"]] = []
 
             # Create Course object
             course = Course(course_information,

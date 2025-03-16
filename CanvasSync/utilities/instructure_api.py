@@ -34,8 +34,8 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return requests.get(u"%s%s" % (self.settings.domain, api_call),
-                            headers={u'Authorization': u"Bearer %s" % self.settings.token})
+        return requests.get("%s%s" % (self.settings.domain, api_call),
+                            headers={'Authorization': "Bearer %s" % self.settings.token})
 
     def get_json(self, api_call):
         """
@@ -66,12 +66,12 @@ class InstructureApi(object):
         # access restricted were missing required dictionary keys
         # in other functions, so let's filter them out
 
-        course_list = self.get_json_list(u"/api/v1/courses?per_page=100")
+        course_list = self.get_json_list("/api/v1/courses?per_page=100")
         filtered_course_list = []
 
         for course in course_list:
             if "access_restricted_by_date" in course and \
-                course[u"access_restricted_by_date"]:
+                course["access_restricted_by_date"]:
                 continue
 
             filtered_course_list.append(course)
@@ -84,7 +84,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json_list(u"/api/v1/courses/%s/modules?per_page=100" % course_id)
+        return self.get_json_list("/api/v1/courses/%s/modules?per_page=100" % course_id)
 
     def get_files_in_folder(self, folder_id):
         """
@@ -92,7 +92,7 @@ class InstructureApi(object):
 
         folder_id : int | A folder ID number
         """
-        return self.get_json_list(u"/api/v1/folders/%s/files?per_page=100" % folder_id)
+        return self.get_json_list("/api/v1/folders/%s/files?per_page=100" % folder_id)
 
     def get_folders_in_folder(self, folder_id):
         """
@@ -100,7 +100,7 @@ class InstructureApi(object):
 
         folder_id : int | A folder ID number
         """
-        return self.get_json_list(u"/api/v1/folders/%s/folders?per_page=100" % folder_id)
+        return self.get_json_list("/api/v1/folders/%s/folders?per_page=100" % folder_id)
 
     def get_files_in_course(self, course_id):
         """
@@ -108,7 +108,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json_list(u"/api/v1/courses/%s/files?per_page=100" % course_id)
+        return self.get_json_list("/api/v1/courses/%s/files?per_page=100" % course_id)
 
     def get_folders_in_course(self, course_id):
         """
@@ -116,7 +116,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json_list(u"/api/v1/courses/%s/folders?per_page=100" % course_id)
+        return self.get_json_list("/api/v1/courses/%s/folders?per_page=100" % course_id)
 
     def get_items_in_module(self, course_id, module_id):
         """
@@ -125,7 +125,7 @@ class InstructureApi(object):
         course_id : int | A course ID number
         module_id : int | A module ID number
         """
-        return self.get_json(u"/api/v1/courses/%s/modules/%s/items?per_page=100" % (course_id, module_id))
+        return self.get_json("/api/v1/courses/%s/modules/%s/items?per_page=100" % (course_id, module_id))
 
     def download_item_information(self, url):
         """
@@ -151,7 +151,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json_list(u"/api/v1/courses/%s/assignments?per_page=100" % course_id)
+        return self.get_json_list("/api/v1/courses/%s/assignments?per_page=100" % course_id)
 
     def get_pages_in_course(self, course_id):
         """
@@ -159,7 +159,7 @@ class InstructureApi(object):
 
         course_id : int | A course ID number
         """
-        return self.get_json_list(u"/api/v1/courses/%s/pages" % course_id)
+        return self.get_json_list("/api/v1/courses/%s/pages" % course_id)
 
     def download_page_information(self, course_id, page_id):
         """
@@ -168,4 +168,4 @@ class InstructureApi(object):
         course_id : int | A course ID number
         page_id : int | A page ID number
         """
-        return self.get_json(u"/api/v1/courses/%s/pages/%s" % (course_id, page_id))
+        return self.get_json("/api/v1/courses/%s/pages/%s" % (course_id, page_id))

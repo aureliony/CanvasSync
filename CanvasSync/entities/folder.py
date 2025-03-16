@@ -36,8 +36,8 @@ class Folder(CanvasEntity):
 
         self.folder_info = folder_info
 
-        folder_id = self.folder_info[u"id"]
-        folder_name = helpers.get_corrected_name(self.folder_info[u"name"])
+        folder_id = self.folder_info["id"]
+        folder_name = helpers.get_corrected_name(self.folder_info["name"])
         folder_path = os.path.join(parent.get_path(), folder_name)
 
         # Initialize base Module class
@@ -46,15 +46,15 @@ class Folder(CanvasEntity):
                               name=folder_name,
                               sync_path=folder_path,
                               parent=parent,
-                              identifier=u"folder")
+                              identifier="folder")
 
         self.black_list = black_list
 
     def __repr__(self):
         """ String representation, overwriting base class method """
-        status = ANSI.format(u"[SYNCED]", formatting=u"green")
-        return status + u" " * 7 + u"|   " + u"\t" * self.indent + u"%s: %s" \
-                                                                   % (ANSI.format(u"Folder", formatting=u"folder"),
+        status = ANSI.format("[SYNCED]", formatting="green")
+        return status + " " * 7 + "|   " + "\t" * self.indent + "%s: %s" \
+                                                                   % (ANSI.format("Folder", formatting="folder"),
                                                                       self.name)
 
     def initialize_black_list(self):
@@ -67,7 +67,7 @@ class Folder(CanvasEntity):
         entities = self.get_synchronizer().get_entities(self.get_course().get_id())
 
         # Get list of names of all the File objects of the entities list
-        black_list = [x.get_id() for x in entities if x.get_identifier_string() == u"file"]
+        black_list = [x.get_id() for x in entities if x.get_identifier_string() == "file"]
 
         return black_list
 
@@ -78,7 +78,7 @@ class Folder(CanvasEntity):
         for file in files:
             # Skip duplicates if this settings is active
             # (otherwise the list will be empty)
-            if not file or file[u"id"] in self.black_list:
+            if not file or file["id"] in self.black_list:
                 continue
 
             file = File(file, self, add_to_list_of_entities=False)
@@ -89,7 +89,7 @@ class Folder(CanvasEntity):
         folders = self.api.get_folders_in_folder(self.id)
 
         for folder in folders:
-            if folder[u"name"] == u"course_image":
+            if folder["name"] == "course_image":
                 # Do we really need that course image?
                 continue
 

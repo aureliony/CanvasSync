@@ -138,7 +138,7 @@ class CanvasEntity(object):
 
     def __repr__(self):
         """ String representation, overwritten in derived class """
-        return u"Base object: %s" % self.name
+        return "Base object: %s" % self.name
 
     def __len__(self):
         """ len() method """
@@ -159,12 +159,12 @@ class CanvasEntity(object):
     def get_course(self):
         """ Go up one level until the Course object is reached, then return it """
 
-        if self.get_identifier_string() == u"course":
+        if self.get_identifier_string() == "course":
             return self
 
         parent = self.parent
 
-        while parent.get_identifier_string().lower() != u"course":
+        while parent.get_identifier_string().lower() != "course":
             parent = parent.get_parent()
 
         return parent
@@ -210,7 +210,7 @@ class CanvasEntity(object):
 
     def print_status(self, status: str, color: str):
         """ Print status to console """
-        self.print(ANSI.format(u"[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
+        self.print(ANSI.format("[%s]" % status, formatting=color) + str(self)[len(status) + 2:])
 
     def _flush_print_queue(self):
         for args, kwargs in self.print_queue:

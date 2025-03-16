@@ -18,7 +18,7 @@ import sys
 
 
 def help():
-    print(u"""
+    print("""
 -------------------------
        CanvasSync
      Mathias Perslev

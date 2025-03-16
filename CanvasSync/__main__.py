@@ -40,7 +40,7 @@ def run_canvas_sync():
     # Get command line arguments (C-style)
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], u"hsiSNp:", [u"help", u"setup", u"info", u"sync", u"no-sync", u"password"]
+            sys.argv[1:], "hsiSNp:", ["help", "setup", "info", "sync", "no-sync", "password"]
         )
     except getopt.GetoptError as err:
         # print help information and exit
@@ -59,30 +59,30 @@ def run_canvas_sync():
 
     else:
         for o, a in opts:
-            if o in (u"-h", u"--help"):
+            if o in ("-h", "--help"):
                 # Show help
                 usage.help()
-            elif o in (u"-s", u"--setup"):
+            elif o in ("-s", "--setup"):
                 # Force re-setup
                 setup = True
-            elif o in (u"-i", u"--info"):
+            elif o in ("-i", "--info"):
                 # Show current settings
                 show_info = True
-            elif o in (u"-S", u"--sync"):
+            elif o in ("-S", "--sync"):
                 # Force sync
                 manual_sync = True
-            elif o in (u"-N", u"--no-sync"):
+            elif o in ("-N", "--no-sync"):
                 # Force sync
                 manual_sync = False
-            elif o in (u"-p", u"--password"):
+            elif o in ("-p", "--password"):
                 # Specify decyption password
                 print ("Warning: entering password via command "
                        "line can be dangerous")
                 password = a.rstrip()
             else:
                 # Unknown option
-                assert False, u"Unknown option specified, please refer to " \
-                              u"the --help section."
+                assert False, "Unknown option specified, please refer to " \
+                              "the --help section."
 
     # Initialize Settings object. This object will parse the settings
     # file or generate a new one if one does not exist.
@@ -114,15 +114,15 @@ def main_menu(settings):
     to_do = settings.show_main_screen(settings.settings_file_exists())
 
     # Act according to the users input to the main menu function
-    if to_do == u"quit":
+    if to_do == "quit":
         sys.exit()
-    elif to_do == u"set_settings":
+    elif to_do == "set_settings":
         settings.set_settings()
         main_menu(settings)
-    elif to_do == u"show_settings":
+    elif to_do == "show_settings":
         settings.show(quit=False)
         main_menu(settings)
-    elif to_do == u"show_help":
+    elif to_do == "show_help":
         usage.help()
     else:
         do_sync(settings, "")
@@ -144,14 +144,14 @@ def do_sync(settings, password=None):
     synchronizer.sync()
 
     # If here, sync was completed, show prompt
-    print(ANSI.format(u"\n\n[*] Sync complete", formatting=u"bold"))
+    print(ANSI.format("\n\n[*] Sync complete", formatting="bold"))
 
 
 def main():
     try:
         run_canvas_sync()
     except KeyboardInterrupt:
-        print(ANSI.format(u"\n\n[*] Synchronization interrupted", formatting=u"red"))
+        print(ANSI.format("\n\n[*] Synchronization interrupted", formatting="red"))
         sys.exit()
 
 
