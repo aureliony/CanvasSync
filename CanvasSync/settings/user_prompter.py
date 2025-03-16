@@ -15,15 +15,7 @@ A collection of functions used to prompt the user for settings.
 # - Make a Y/N function to reduce code redundancy
 
 # Inbuilt modules
-import glob
 import os
-
-# Check for UNIX or Windows platform
-try:
-    import readline
-    unix = True
-except ImportError:
-    unix = False
 
 # CanvasSync module import
 from CanvasSync.utilities import helpers
@@ -80,21 +72,6 @@ def ask_for_sync_path():
     This folder wll be created using the os module.
     """
 
-    # Enable auto-completion of path and cursor movement using the readline and glob modules
-    def path_completer(text, state):
-        if "~" in text:
-            text = text.replace("~", os.path.expanduser("~"))
-
-        paths = glob.glob("%s*" % text)
-        paths.append(False)
-
-        return os.path.abspath(paths[state]) + '/'
-
-    if unix:
-        readline.set_completer_delims(' \t\n;')
-        readline.parse_and_bind("tab: complete")
-        readline.set_completer(path_completer)
-
     found = False
     # Keep asking until a valid path has been entered by the user
     while not found:
@@ -109,10 +86,6 @@ def ask_for_sync_path():
             print("\n[ERROR] Base path '%s' does not exist." % os.path.split(sync_path)[0])
         else:
             found = True
-
-    if unix:
-        # Disable path auto-completer
-        readline.parse_and_bind('set disable-completion on')
 
     return sync_path
 

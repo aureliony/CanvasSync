@@ -85,15 +85,11 @@ def make_url_shortcut(url, path):
 
 def url_is_blacklisted(url: str) -> bool:
     """Returns True if the URL is blacklisted, otherwise False."""
-    try:
-        parsed_url = urlparse(url)
-        domain = parsed_url.netloc.lower()  # Extract domain & make it lowercase
+    parsed_url = urlparse(url)
+    domain = parsed_url.netloc.lower()  # Extract domain & make it lowercase
 
-        # Check if domain (or subdomain) belongs to a blacklisted site
-        return any(domain.endswith(blacklisted_domain) for blacklisted_domain in BLACKLISTED_DOMAINS)
-
-    except Exception as e:
-        return False
+    # Check if domain (or subdomain) belongs to a blacklisted site
+    return any(domain.endswith(blacklisted_domain) for blacklisted_domain in BLACKLISTED_DOMAINS)
 
 
 def get_last_modified(response: requests.Response) -> Optional[datetime]:
@@ -128,7 +124,7 @@ def download_url_content(url: str, path: str) -> bool:
         try:
             head_response = requests.head(url)
 
-        except Exception:
+        except requests.exceptions.RequestException:
             return False
 
         remote_last_modified = get_last_modified(head_response)
@@ -142,9 +138,8 @@ def download_url_content(url: str, path: str) -> bool:
     try:
         # Download the file if it's new or doesn't exist
         response = requests.get(url)
-        response.raise_for_status()
 
-    except Exception:
+    except requests.exceptions.RequestException:
         return False
 
     if os.path.exists(filepath):

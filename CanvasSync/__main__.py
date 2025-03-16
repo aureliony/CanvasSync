@@ -42,6 +42,7 @@ def run_canvas_sync():
         opts, args = getopt.getopt(
             sys.argv[1:], "hsiSNp:", ["help", "setup", "info", "sync", "no-sync"]
         )
+
     except getopt.GetoptError as err:
         # print help information and exit
         print(err)
@@ -142,11 +143,7 @@ def do_sync(settings):
 
 
 def main():
-    try:
-        run_canvas_sync()
-    except KeyboardInterrupt:
-        print(ANSI.format("\n\n[*] Synchronization interrupted", formatting="red"))
-        sys.exit()
+    run_canvas_sync()
 
 
 # If main module

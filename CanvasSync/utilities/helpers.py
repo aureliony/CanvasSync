@@ -33,7 +33,7 @@ def reorganize(items):
     # If no items or the resource that was attempted to be accessed does not exists (for instance if a teacher makes
     # a sub-header with no items in it, accessing the file content of the sub-header will make the server respond with
     # and error report). In both cases return empty lists.
-    if (isinstance(items, dict) and list(items.keys())[0] == "errors") or len(items) == 0:
+    if not items or (isinstance(items, dict) and list(items.keys())[0] == "errors"):
         return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
@@ -46,10 +46,7 @@ def reorganize(items):
     current_sub_folder_index = -1
 
     # Get the indent level of the outer most scope, should be that of the 0th item in the list, but we check all here.
-    try:
-        outer_indent = min([items[index]["indent"] for index in range(len(items))])
-    except KeyError:
-        print(items)
+    outer_indent = min([items[index]["indent"] for index in range(len(items))])
 
     # Reorganize all items in 'items'
     for item in items:
@@ -102,16 +99,19 @@ def validate_domain(domain):
     """
     try:
         response = requests.get(domain + "/api/v1/courses", timeout=5)
-        if response.status_code==401:
-            # If this response, the server exists and understands
-            # the API call but complains that the call was
-            # not authenticated - the URL represents a Canvas server
-            return True
-        else:
-            print("\n[ERROR] Not a valid Canvas web server. Wrong domain?")
-            return False
-    except Exception:
+
+    except requests.exceptions.RequestException:
         print("\n[ERROR] Invalid domain.")
+        return False
+
+    if response.status_code == 401:
+        # If this response, the server exists and understands
+        # the API call but complains that the call was
+        # not authenticated - the URL represents a Canvas server
+        return True
+
+    else:
+        print("\n[ERROR] Not a valid Canvas web server. Wrong domain?")
         return False
 
 

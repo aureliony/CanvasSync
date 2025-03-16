@@ -87,8 +87,9 @@ class LinkedFile(CanvasEntity):
         # Attempt to download the file
         try:
             response = requests.get(self.download_url)
-        except Exception:
-            # Could not download, catch any exception
+
+        except requests.exceptions.RequestException:
+            # Could not download, catch any request exception
             self.print_status("FAILED", "red")
             return -1
 

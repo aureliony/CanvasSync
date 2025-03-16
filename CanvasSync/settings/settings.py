@@ -125,12 +125,7 @@ class Settings(object):
             return True
 
     def set_settings(self):
-        try:
-            self._set_settings()
-        except KeyboardInterrupt:
-            print(ANSI.format("\n\n[*] Setup interrupted, nothing was saved.", formatting="red"))
-            sys.exit()
-
+        self._set_settings()
         self.write_settings()
 
     def _set_settings(self):

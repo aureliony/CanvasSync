@@ -74,20 +74,11 @@ class File(CanvasEntity):
         file_data = self.api.download_file_payload(self.file_info["url"])
 
         # Write data to file
-        try:
-            open(self.sync_path, "wb").write(file_data)
+        open(self.sync_path, "wb").write(file_data)
 
-            # Set the accessed and modified time to the same as the server file
-            modtime = server_time_modified.timestamp()
-            os.utime(self.sync_path, times=(modtime, modtime))
-
-        except KeyboardInterrupt as e:
-            # If interrupted mid-writing, delete the corrupted file
-            if os.path.exists(self.sync_path):
-                os.remove(self.sync_path)
-
-            # Re-raise, will be catched in CanvasSync.py
-            raise e
+        # Set the accessed and modified time to the same as the server file
+        modtime = server_time_modified.timestamp()
+        os.utime(self.sync_path, times=(modtime, modtime))
 
         return True
 
