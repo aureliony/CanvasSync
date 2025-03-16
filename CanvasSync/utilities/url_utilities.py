@@ -147,8 +147,15 @@ def download_url_content(url: str, path: str) -> bool:
     except Exception:
         return False
 
-    is_file_changed = not os.path.exists(filepath) or (open(filepath, "rb").read() != response.content)
-    if is_file_changed:
+    if os.path.exists(filepath):
+        old_file_data = open(filepath, "rb").read()
+        file_was_changed = old_file_data != response.content
+        new_file_size_ratio = len(response.content) / max(1, len(old_file_data)) # avoid zero division
+        # If the new file size is less than half of the old file size, it has likely been removed
+        if file_was_changed and new_file_size_ratio > 0.5:
+            open(filepath, "wb").write(response.content)
+
+    else:
         open(filepath, "wb").write(response.content)
 
     remote_last_modified = get_last_modified(response)
@@ -156,4 +163,4 @@ def download_url_content(url: str, path: str) -> bool:
         modtime = remote_last_modified.timestamp()
         os.utime(filepath, times=(modtime, modtime))
 
-    return is_file_changed
+    return file_was_changed
