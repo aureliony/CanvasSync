@@ -71,11 +71,8 @@ class Page(CanvasEntity):
 
         # Download information on all found files and add File objects to the children
         for url in canvas_file_urls:
-            try:
-                file_info = self.api.download_item_information(url)
-                if u'display_name' not in file_info:
-                    continue
-            except Exception:
+            file_info = self.api.download_item_information(url)
+            if not file_info or 'display_name' not in file_info:
                 continue
 
             item = File(file_info, parent=self)

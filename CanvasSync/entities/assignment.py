@@ -78,11 +78,9 @@ class Assignment(CanvasEntity):
         assignment to the list of children and sync
         """
         # Get file URLs pointing to Canvas items
-        try:
-            canvas_file_urls = re.findall(r'data-api-endpoint=\"(.*?)\"',
-                                          self.assignment_info.get(u"description") or u"")
-        except:
-            canvas_file_urls = []
+        canvas_file_urls = re.findall(
+            r'data-api-endpoint=\"(.*?)\"', self.assignment_info.get("description") or ""
+        )
 
         # Download information on all found files and add File objects
         # to the children

@@ -78,7 +78,7 @@ class Folder(CanvasEntity):
         for file in files:
             # Skip duplicates if this settings is active
             # (otherwise the list will be empty)
-            if file[u"id"] in self.black_list:
+            if not file or file[u"id"] in self.black_list:
                 continue
 
             file = File(file, self, add_to_list_of_entities=False)

@@ -88,8 +88,9 @@ class Module(CanvasEntity):
         detailed_file_info = self.api.download_item_information(file_information[u"url"])
 
         # Initialize Item object and add to list of children
-        item = File(detailed_file_info, self)
-        self.add_child(item)
+        if detailed_file_info:
+            item = File(detailed_file_info, self)
+            self.add_child(item)
 
     def add_page(self, page_information):
         """
