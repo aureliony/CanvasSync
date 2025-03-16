@@ -20,11 +20,6 @@ These settings include:
 
 The Settings object will prompt the user for these settings through the
 set_settings method and write them to a hidden file in the users home directory.
-The file is encrypted using a user-specified password. This password must
-be specified whenever CanvasSync is launched. Encryption is implemented via
-the PyCrypto AES-256 encryption module. The password is stored locally in a
-hashed format using the bcrypt module. At runtime, the hashed password is used
-to validate the user input password.
 """
 
 # TODO
@@ -41,7 +36,6 @@ import sys
 from CanvasSync.settings import user_prompter
 
 # CanvasSync modules
-from CanvasSync.settings.cryptography import decrypt, encrypt
 from CanvasSync.utilities import helpers
 from CanvasSync.utilities.ANSI import ANSI
 from CanvasSync.utilities.instructure_api import InstructureApi
@@ -82,7 +76,7 @@ class Settings(object):
                self.token != "Not set" and \
                self.courses_to_sync[0] != "Not set"
 
-    def load_settings(self, password):
+    def load_settings(self):
         """
         Loads the current settings from the settings file and sets the
         attributes of the Settings object
@@ -94,18 +88,7 @@ class Settings(object):
             self.set_settings()
             return True
 
-        encrypted_message = open(self.settings_path, "rb").read()
-        messages = decrypt(encrypted_message, password)
-        if not messages:
-            # Password file did not exist, set new settings
-            print(ANSI.format("\n[ERROR] The hashed password file does not"
-                              "longer exist. You must re-enter settings.",
-                              "announcer"))
-            input("\nPres enter to continue.")
-            self.set_settings()
-            return self.load_settings("")
-        else:
-            messages = messages.decode("utf-8").split("\n")
+        messages = open(self.settings_path, "r", encoding="utf-8").read().split('\n')
 
         # Set sync path, domain and auth token
         self.sync_path, self.domain, self.token = messages[:3]
@@ -191,21 +174,19 @@ class Settings(object):
         self.print_advanced_settings(clear=False)
         print(ANSI.format("\n\nThese settings will be saved", "announcer"))
 
-        # Write password encrypted settings to hidden file in home directory
-        with open(self.settings_path, "wb") as out_file:
-            settings = self.sync_path + "\n" + self.domain + "\n" + self.token + "\n"
+        # Write settings to file in home directory
+        with open(self.settings_path, "w", encoding="utf-8") as out_file:
+            out_file.write(self.sync_path + "\n" + self.domain + "\n" + self.token + "\n")
 
             for course in self.courses_to_sync:
-                settings += "SYNC COURSE$" + course + "\n"
+                out_file.write("SYNC COURSE$" + course + "\n")
 
-            settings += "Files$" + str(self.modules_settings["Files"]) + "\n"
-            settings += "HTML pages$" + str(self.modules_settings["HTML pages"]) + "\n"
-            settings += "External URLs$" + str(self.modules_settings["External URLs"]) + "\n"
-            settings += "Assignments$" + str(self.sync_assignments) + "\n"
-            settings += "Linked files$" + str(self.download_linked) + "\n"
-            settings += "Avoid duplicates$" + str(self.avoid_duplicates) + "\n"
-
-            out_file.write(encrypt(settings))
+            out_file.write("Files$" + str(self.modules_settings["Files"]) + "\n")
+            out_file.write("HTML pages$" + str(self.modules_settings["HTML pages"]) + "\n")
+            out_file.write("External URLs$" + str(self.modules_settings["External URLs"]) + "\n")
+            out_file.write("Assignments$" + str(self.sync_assignments) + "\n")
+            out_file.write("Linked files$" + str(self.download_linked) + "\n")
+            out_file.write("Avoid duplicates$" + str(self.avoid_duplicates) + "\n")
 
     def print_advanced_settings(self, clear=True):
         """
@@ -271,7 +252,7 @@ class Settings(object):
         Show the current settings
         If quit=True, sys.exit after user confirmation
         """
-        valid_token = self.load_settings("")
+        valid_token = self.load_settings()
 
         self.print_settings(first_time_setup=False, clear=True)
         self.print_advanced_settings(clear=False)

@@ -61,7 +61,6 @@ Command line arguments:
 -s or --setup will prompt the user to reinitialize settings
 -h or --help will show the help screen
 -S or --sync to synchronize
--p to specify settings password (potentially dangerous)
 
 Setup
 ----------
@@ -77,9 +76,7 @@ The process of generating a token is illustrated below:
 
 ![](resources/auth_token.png)
 
-The authentication token is stored in an local file encrypted using a private password. Consequently, the user must
-specify the password whenever CanvasSync is launched to synchronize at a later time. Passwords and/or auth tokens are
-cannot and will not be shared with third parties.
+The authentication token is stored in an unencrypted local file.
 
 Disclaimer
 ----------

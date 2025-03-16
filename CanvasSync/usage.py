@@ -31,7 +31,6 @@ institutions Canvas web server to a mirrored folder on their local computer.
 Usage
 -----
 $ canvas.py [-S] <sync> [-h] <help> [-s] <reset settings> [-i] <show current settings>
-    [-p {password}] <specify password>
 
     -h [--help], optional                : Show this help screen.
 
@@ -44,8 +43,6 @@ $ canvas.py [-S] <sync> [-h] <help> [-s] <reset settings> [-i] <show current set
                                            these settings.
 
     -i [--info], optional                : Show currently active settings.
-
-    -p {password}, optional              : Specify settings file decryption password (potentially dangerous)
 
 Setup
 -----

@@ -33,7 +33,7 @@ class Synchronizer(CanvasEntity):
         """
 
         if not settings.is_loaded():
-            settings.load_settings("")
+            settings.load_settings()
 
         # Get the corrected top-level sync path
         sync_path = settings.sync_path

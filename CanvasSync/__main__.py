@@ -40,7 +40,7 @@ def run_canvas_sync():
     # Get command line arguments (C-style)
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:], "hsiSNp:", ["help", "setup", "info", "sync", "no-sync", "password"]
+            sys.argv[1:], "hsiSNp:", ["help", "setup", "info", "sync", "no-sync"]
         )
     except getopt.GetoptError as err:
         # print help information and exit
@@ -51,7 +51,6 @@ def run_canvas_sync():
     setup = False
     show_info = False
     manual_sync = False
-    password = ""
 
     if len(opts) == 0:
         # Sync by default
@@ -74,11 +73,6 @@ def run_canvas_sync():
             elif o in ("-N", "--no-sync"):
                 # Force sync
                 manual_sync = False
-            elif o in ("-p", "--password"):
-                # Specify decyption password
-                print ("Warning: entering password via command "
-                       "line can be dangerous")
-                password = a.rstrip()
             else:
                 # Unknown option
                 assert False, "Unknown option specified, please refer to " \
@@ -99,7 +93,7 @@ def run_canvas_sync():
 
     # If -S or --sync was specified, sync and exit
     if manual_sync:
-        do_sync(settings, password)
+        do_sync(settings)
         sys.exit()
 
     # If here, CanvasSync was launched without parameters, show main screen
@@ -125,13 +119,13 @@ def main_menu(settings):
     elif to_do == "show_help":
         usage.help()
     else:
-        do_sync(settings, "")
+        do_sync(settings)
 
 
-def do_sync(settings, password=None):
+def do_sync(settings):
     # Initialize the Instructure Api object used to make API
     # calls to the Canvas server
-    valid_token = settings.load_settings(password)
+    valid_token = settings.load_settings()
     if not valid_token:
         settings.print_auth_token_reset_error()
         sys.exit()

@@ -15,10 +15,8 @@ A collection of small static helper-functions used in various modules of CanvasS
 # - (find better solution to sub-folder problem than the reorganize function?)
 
 import os
-from typing import Callable
 
 import requests
-
 from json2html import json2html
 
 
