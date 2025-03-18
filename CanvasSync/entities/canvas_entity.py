@@ -227,7 +227,7 @@ class CanvasEntity(object):
             self._flush_print_queue()
 
         else:
-            executor = ThreadPoolExecutor()
+            executor = ThreadPoolExecutor(4)
             futures =  [executor.submit(child.sync) for child in self]
 
             # Wait for our turn to print
