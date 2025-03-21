@@ -151,6 +151,7 @@ def download_url_content(url: str, path: str) -> bool:
             open(filepath, "wb").write(response.content)
 
     else:
+        file_was_changed = True
         open(filepath, "wb").write(response.content)
 
     remote_last_modified = get_last_modified(response)
