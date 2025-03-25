@@ -113,7 +113,7 @@ class Course(CanvasEntity):
                 break
 
         # Change name of folder
-        main_folder["name"] = "Other Files"
+        main_folder["name"] = "Files"
 
         folder = Folder(main_folder, self)
         self.add_child(folder)
