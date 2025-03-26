@@ -69,7 +69,7 @@ class ExternalUrl(CanvasEntity):
             self.print_status("URL UPDATED", color="blue")
 
         if download_url_content(url, path):
-            self.print_status("DOWNLOADING", color="blue")
+            self.print_status("DOWNLOADED", color="blue")
 
         # As opposed to the File and Page classes we never write the "DOWNLOAD" status as we already have
         # all information needed to create the URL shortcut at this point. Here we just print the SYNCED status

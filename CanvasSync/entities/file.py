@@ -68,7 +68,7 @@ class File(CanvasEntity):
                 # local file is up-to-date
                 return False
 
-        self.print_status("DOWNLOADING", color="blue")
+        self.print_status("DOWNLOADED", color="blue")
 
         # Download file payload from server
         file_data = self.api.download_file_payload(self.file_info["url"])

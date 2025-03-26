@@ -82,7 +82,7 @@ class LinkedFile(CanvasEntity):
         if os.path.exists(self.sync_path):
             return False
 
-        self.print_status("DOWNLOADING", color="blue")
+        self.print_status("DOWNLOADED", color="blue")
 
         # Attempt to download the file
         try:

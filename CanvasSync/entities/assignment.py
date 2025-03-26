@@ -123,7 +123,7 @@ class Assignment(CanvasEntity):
         """
         self.add_files()
         if self.make_html():
-            self.print_status("DOWNLOADING", color="blue")
+            self.print_status("DOWNLOADED", color="blue")
 
         self.print_status("SYNCED", color="green")
         super().sync()
