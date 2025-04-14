@@ -136,14 +136,13 @@ class InstructureApi(object):
         url = url.split(self.settings.domain)[-1]
         return self.get_json(url)
 
-    def download_file_payload(self, donwload_url):
+    def download_file_payload(self, download_url):
         """
         Returns the payload of a specified file in the Canvas system
 
         donwload_url : string | The API download url pointing to a file in the Canvas system
         """
-        url = donwload_url.split(self.settings.domain)[-1]
-        return self._get(url).content
+        return requests.get(download_url).content
 
     def get_assignments_in_course(self, course_id):
         """
