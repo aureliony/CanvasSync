@@ -85,7 +85,7 @@ class Page(CanvasEntity):
             # and then between 1 and 10 of any characters after that). This has 2 purposes:
             # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
             # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
-            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', html_body or "")
+            urls = re.findall(r'href=[\'"]?([^\'" >]+)', html_body or "")
 
             for url in urls:
                 linked_file = LinkedFile(url, self)

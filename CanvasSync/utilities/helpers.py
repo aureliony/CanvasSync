@@ -19,6 +19,18 @@ import os
 import requests
 from json2html import json2html
 
+FILENAME_ILLEGAL_TO_LEGAL_CHARS = {
+    "/": "_",
+    "\\": "_",
+    "\"": "-",
+    ":": "-",
+    "*": "-",
+    "?": "-",
+    "<": "-",
+    ">": "-",
+    "|": "-"
+}
+
 
 def reorganize(items):
     """
@@ -80,9 +92,8 @@ def get_corrected_name(name):
 
     name : string | A string representing the name of an Entry (Module, File etc.)
     """
-    from CanvasSync.utilities import CLEAN_CHARS
     name = name.strip(" .")
-    for char, replace in CLEAN_CHARS.items():
+    for char, replace in FILENAME_ILLEGAL_TO_LEGAL_CHARS.items():
         name = name.replace(char, replace)
     max_length = 255
     if len(name) > max_length:

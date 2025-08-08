@@ -25,6 +25,7 @@ import requests
 # CanvasSync module imports
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities.helpers import get_corrected_name
 
 
 class LinkedFile(CanvasEntity):
@@ -42,7 +43,7 @@ class LinkedFile(CanvasEntity):
         # Get the potential file name from the URL
         # OBS: We do not correct the name in this class, as we need to use the length of the name to determine
         # if the link is valid.
-        file_name = os.path.split(download_url)[-1]
+        file_name = get_corrected_name(os.path.split(download_url)[-1])
 
         # File path
         file_path = os.path.join(parent.get_path(), file_name)
