@@ -136,7 +136,8 @@ def validate_token(domain, token):
         return False
 
     response = str(requests.get(domain + "/api/v1/courses",
-                                headers={'Authorization': "Bearer %s" % token}).text)
+                                headers={'Authorization': "Bearer %s" % token},
+                                timeout=5).text)
 
     if "Invalid access token" in response:
         print("The server did not accept the authentication token.")

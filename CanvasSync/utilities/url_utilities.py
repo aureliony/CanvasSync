@@ -102,10 +102,10 @@ def get_last_modified(response: requests.Response) -> Optional[datetime]:
 
 def download_url_content(url: str, path: str) -> bool:
     """
-    Downloads the content from the given URL and saves it to the specified path 
+    Downloads the content from the given URL and saves it to the specified path
     only if the remote file is newer than the local one.
     """
-    
+
     if url_is_blacklisted(url):
         return False
 
@@ -137,7 +137,7 @@ def download_url_content(url: str, path: str) -> bool:
 
     try:
         # Download the file if it's new or doesn't exist
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
 
     except requests.exceptions.RequestException:
         return False

@@ -35,7 +35,8 @@ class InstructureApi(object):
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
         return requests.get("%s%s" % (self.settings.domain, api_call),
-                            headers={'Authorization': "Bearer %s" % self.settings.token})
+                            headers={'Authorization': "Bearer %s" % self.settings.token},
+                            timeout=5)
 
     def get_json(self, api_call):
         """
@@ -142,7 +143,7 @@ class InstructureApi(object):
 
         donwload_url : string | The API download url pointing to a file in the Canvas system
         """
-        return requests.get(download_url).content
+        return requests.get(download_url, timeout=5).content
 
     def get_assignments_in_course(self, course_id):
         """
