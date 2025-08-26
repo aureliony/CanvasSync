@@ -136,6 +136,7 @@ def do_sync(settings):
 
     # Start Synchronizer with the current settings
     synchronizer = Synchronizer(settings=settings, api=api)
+    synchronizer.can_print.release()
     synchronizer.sync()
 
     # If here, sync was completed, show prompt

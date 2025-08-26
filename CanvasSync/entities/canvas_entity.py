@@ -22,8 +22,8 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 """
 # Inbuilt modules
 import os
-import time
 from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
 
 # CanvasSync module imports
 from CanvasSync.utilities.ANSI import ANSI
@@ -100,7 +100,7 @@ class CanvasEntity(object):
 
         # Child objects, that is Entities that are located below this current level in the folder hierarchy
         # E.g. this list could contain Item objects located under a Module object.
-        self.children = []
+        self.children: list[CanvasEntity] = []
 
         # Indent level
         if self.parent:
@@ -124,17 +124,8 @@ class CanvasEntity(object):
 
         # Initialize list of args to print
         self.print_queue = []
-        self.child_to_print = 0
-        self.has_printed = False
-
-    def __getitem__(self, item):
-        """ Container get-item method can be used to access a specific child object """
-        return self.children[item]
-
-    def __iter__(self):
-        """ Iterator method yields all Entities contained by this CanvasEntity """
-        for child in self.children:
-            yield child
+        self.can_print = Lock()
+        self.can_print.acquire()
 
     def __repr__(self):
         """ String representation, overwritten in derived class """
@@ -216,34 +207,32 @@ class CanvasEntity(object):
         for args, kwargs in self.print_queue:
             print(*args, flush=True, **kwargs)
 
-        self.has_printed = True
         self.print_queue.clear()
 
     def sync(self, threaded=True):
         if not threaded:
-            for child in self:
+            for child in self.children:
                 child.sync()
 
             self._flush_print_queue()
 
         else:
             executor = ThreadPoolExecutor(8)
-            futures =  [executor.submit(child.sync) for child in self]
+            futures =  [executor.submit(child.sync) for child in self.children]
 
             # Wait for our turn to print
-            if self.parent is not None:
-                while not self.parent.has_printed or \
-                    self != self.parent.children[self.parent.child_to_print]:
-                    time.sleep(0.01)
-
+            self.can_print.acquire()
             self._flush_print_queue()
-            for future in futures:
+            self.can_print.release()
+
+            if self.children:
+                self.children[0].can_print.release()
+            for i, future in enumerate(futures):
                 future.result() # Propagate exceptions if present
+                if i+1 < len(self.children):
+                    self.children[i+1].can_print.release()
 
             executor.shutdown() # This blocks until all jobs are done
-
-        if self.parent is not None:
-            self.parent.child_to_print += 1
 
     def update_path(self):
         """ Update the path to the current parents sync path plus the current file name """

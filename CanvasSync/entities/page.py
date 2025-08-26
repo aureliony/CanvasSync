@@ -130,7 +130,7 @@ class Page(CanvasEntity):
             self.print_status("DOWNLOADED", color="blue")
         self.print_status("SYNCED", color="green")
 
-        for file in self:
+        for file in self.children:
             file.update_path()
 
         super().sync()
