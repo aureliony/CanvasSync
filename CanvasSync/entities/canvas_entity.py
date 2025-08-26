@@ -215,18 +215,22 @@ class CanvasEntity(object):
                 child.sync()
 
             self._flush_print_queue()
+            return
 
-        else:
-            executor = ThreadPoolExecutor(8)
-            futures =  [executor.submit(child.sync) for child in self.children]
-
-            # Wait for our turn to print
+        if not self.children:
             self.can_print.acquire()
             self._flush_print_queue()
             self.can_print.release()
 
-            if self.children:
-                self.children[0].can_print.release()
+        else:
+            executor = ThreadPoolExecutor(min(8, len(self.children)))
+            futures =  [executor.submit(child.sync) for child in self.children]
+
+            self.can_print.acquire()
+            self._flush_print_queue()
+            self.can_print.release()
+
+            self.children[0].can_print.release()
             for i, future in enumerate(futures):
                 future.result() # Propagate exceptions if present
                 if i+1 < len(self.children):
