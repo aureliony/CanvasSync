@@ -223,20 +223,18 @@ class CanvasEntity(object):
             self.can_print.release()
 
         else:
-            executor = ThreadPoolExecutor(min(8, len(self.children)))
-            futures =  [executor.submit(child.sync) for child in self.children]
+            with ThreadPoolExecutor(min(8, len(self.children))) as executor:
+                futures =  [executor.submit(child.sync) for child in self.children]
 
-            self.can_print.acquire()
-            self._flush_print_queue()
-            self.can_print.release()
+                self.can_print.acquire()
+                self._flush_print_queue()
+                self.can_print.release()
 
-            self.children[0].can_print.release()
-            for i, future in enumerate(futures):
-                future.result() # Propagate exceptions if present
-                if i+1 < len(self.children):
-                    self.children[i+1].can_print.release()
-
-            executor.shutdown() # This blocks until all jobs are done
+                self.children[0].can_print.release()
+                for i, future in enumerate(futures):
+                    future.result() # Propagate exceptions if present
+                    if i+1 < len(self.children):
+                        self.children[i+1].can_print.release()
 
     def update_path(self):
         """ Update the path to the current parents sync path plus the current file name """
