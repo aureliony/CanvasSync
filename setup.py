@@ -4,7 +4,6 @@ from setuptools import setup
 from CanvasSync._version import __version__
 
 readme = open('README.md').read()
-changes = open('CHANGES.txt').read()
 requirements = list(filter(None, open("requirements.txt").read().split("\n")))
 
 
@@ -13,7 +12,7 @@ setup(
     version=__version__,
     description='Synchronizes modules, assignments and files from a '
                 'Canvas server to a local folder',
-    long_description=readme + "\n\n" + changes,
+    long_description=readme,
     author='Mathias Perslev',
     author_email='mathias@perslev.com',
     url='https://github.com/perslev/CanvasSync',
