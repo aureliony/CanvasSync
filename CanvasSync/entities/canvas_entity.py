@@ -223,7 +223,7 @@ class CanvasEntity(object):
             self.can_print.release()
 
         else:
-            with ThreadPoolExecutor(min(8, len(self.children))) as executor:
+            with ThreadPoolExecutor(min(4, len(self.children))) as executor:
                 futures =  [executor.submit(child.sync) for child in self.children]
 
                 self.can_print.acquire()
